@@ -1,0 +1,14 @@
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\bin\Debug\net6.0\DAL.deps.json
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\bin\Debug\net6.0\DAL.runtimeconfig.json
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\bin\Debug\net6.0\DAL.dll
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\bin\Debug\net6.0\DAL.pdb
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.csproj.AssemblyReference.cache
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.AssemblyInfoInputs.cache
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.AssemblyInfo.cs
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.csproj.CoreCompileInputs.cache
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.dll
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\refint\DAL.dll
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.pdb
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\DAL.genruntimeconfig.cache
+D:\School\S5\SE Project\02-webapi\HPCM\domain\DAL\obj\Debug\net6.0\ref\DAL.dll

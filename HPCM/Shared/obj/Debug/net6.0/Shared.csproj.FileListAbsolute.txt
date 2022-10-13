@@ -1,0 +1,12 @@
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\bin\Debug\net6.0\Shared.deps.json
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\bin\Debug\net6.0\Shared.dll
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\bin\Debug\net6.0\Shared.pdb
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.csproj.AssemblyReference.cache
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.AssemblyInfoInputs.cache
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.AssemblyInfo.cs
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.csproj.CoreCompileInputs.cache
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.dll
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\refint\Shared.dll
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\Shared.pdb
+D:\School\S5\SE Project\02-webapi\HPCM\Shared\obj\Debug\net6.0\ref\Shared.dll
