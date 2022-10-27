@@ -56,7 +56,7 @@ namespace DAL.Repositories
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Creating new League FAILED, check input Params",e.ToString());
+                throw new ArgumentException("Creating new League FAILED, check input Params| ",e.ToString());
             }
         }
 
@@ -71,7 +71,7 @@ namespace DAL.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception("Unable to delete specified club", e);
+                throw new Exception("Unable to delete specified club| ", e);
             }
         }
 
@@ -83,7 +83,7 @@ namespace DAL.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception("Error retrieving clubs from db",e);
+                throw new Exception("Error retrieving clubs from db| ",e);
             }
         }
 
@@ -96,13 +96,55 @@ namespace DAL.Repositories
             catch (Exception e)
             {
 
-                throw new Exception("Unable to retrieve club by id from db",e);
+                throw new Exception("Unable to retrieve club by id from db| ",e);
             }
         }
 
-        public ClubMember JoinClubAsMember(int clubId, int memberId, int memberTypeId)
+        public Invitation CreateInvitation(int memberId,int clubId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return new Invitation()
+                {
+                    MemberId = memberId,
+                    ClubId = clubId,
+                    ExpirationDate = DateTime.UtcNow.AddDays(7),
+                };
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Unable to get Invitation| ",e);
+            }
+        }
+
+        public IQueryable<ClubMember> JoinClubWithInvitation(int memberId, string hash)
+        {
+            try
+            {
+                Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
+                if (invitationAttempt.MemberId == memberId)
+                {
+                    _db.ClubMembers.Add(new ClubMember()
+                    {
+                        ClubId = invitationAttempt.ClubId,
+                        MemberId = memberId,
+                        Role =  invitationAttempt.Role
+                    });
+                    _db.Invitations.Remove(invitationAttempt);
+                    _db.SaveChanges();
+                    return _db.ClubMembers.Where(s => s.MemberId == memberId).Where(s => s.ClubId == invitationAttempt.ClubId);
+                }
+                else
+                {
+                    throw new Exception("Invalid attempt at joining club");
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to join club| ",e);
+            }
         }
     }
 }

@@ -14,9 +14,8 @@ namespace DAL.Interfaces
         Club CreateClub(Club newClubDetails);
         bool AlterClub(Club newClubDetails);
         bool DeleteClub(int clubId);
-        ClubMember JoinClubAsMember(int clubId, int memberId, int memberTypeId);
         League CreateClubLeague(League newLeagueDetails);
-        
-
+        Invitation CreateInvitation(int memberId,int clubId);
+        IQueryable<ClubMember> JoinClubWithInvitation(int memberId, string hash);
     }
 }

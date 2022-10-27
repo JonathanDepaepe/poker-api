@@ -123,6 +123,7 @@ namespace DAL.Models
                 entity.Property(e => e.ExpirationDate).HasPrecision(0);
 
                 entity.Property(e => e.InvitationHash).HasMaxLength(500);
+                entity.Property(e => e.Role).HasMaxLength(500);
 
                 entity.HasOne(d => d.Club)
                     .WithMany()
@@ -209,6 +210,7 @@ namespace DAL.Models
                 entity.Property(e => e.Location).HasMaxLength(500);
 
                 entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Status).HasMaxLength(255);
 
                 entity.Property(e => e.StartDateTime).HasPrecision(0);
             });
