@@ -19,27 +19,85 @@ namespace DAL.Repositories
 
         public Club CreateClub(Club newClubDetails)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Club newClub = new()
+                {
+                    OwnerId = newClubDetails.OwnerId,
+                    Name = newClubDetails.Name,
+                    PictureUrl = newClubDetails.PictureUrl,
+                    Public = newClubDetails.Public,
+                    CreationDateTime = DateTime.UtcNow
+                };
+                _db.Clubs.Add(newClub);
+                _db.SaveChanges();
+                return _db.Clubs.OrderBy(s => s.ClubId).Last();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Creating new club FAILED, check input Params", e.ToString());
+            }
         }
 
         public League CreateClubLeague(League newLeagueDetails)
         {
-            throw new NotImplementedException();
+            try
+            {
+                League league = new()
+                {
+                    ClubId = newLeagueDetails.ClubId,
+                    Name = newLeagueDetails.Name,
+                    Public = newLeagueDetails.Public,
+                    Description = newLeagueDetails.Description
+                };
+                _db.Leagues.Add(league);
+                _db.SaveChanges();
+                return _db.Leagues.OrderBy(s => s.LeagueId).Last();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Creating new League FAILED, check input Params",e.ToString());
+            }
         }
 
         public bool DeleteClub(int clubId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _db.Clubs.Remove(_db.Clubs.Find(clubId));
+                _db.SaveChanges();
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to delete specified club", e);
+            }
         }
 
-        public IQueryable<Club> GetClub()
+        public IQueryable<Club> GetClubs()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _db.Clubs;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error retrieving clubs from db",e);
+            }
         }
 
         public IQueryable<Club> GetClubById(int clubId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _db.Clubs.Where(s => s.ClubId == clubId);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Unable to retrieve club by id from db",e);
+            }
         }
 
         public ClubMember JoinClubAsMember(int clubId, int memberId, int memberTypeId)

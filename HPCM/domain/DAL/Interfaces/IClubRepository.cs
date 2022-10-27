@@ -9,7 +9,7 @@ namespace DAL.Interfaces
 {
     public interface IClubRepository
     {
-        IQueryable<Club> GetClub();
+        IQueryable<Club> GetClubs();
         IQueryable<Club> GetClubById(int clubId);
         Club CreateClub(Club newClubDetails);
         bool AlterClub(Club newClubDetails);
