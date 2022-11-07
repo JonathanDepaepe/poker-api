@@ -27,7 +27,11 @@
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "F:\\Collected school documents\\School 22-23\\S5\\SE project\\HPCM\\Shared\\Shared.csproj": {
+                "projectPath": "F:\\Collected school documents\\School 22-23\\S5\\SE project\\HPCM\\Shared\\Shared.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -121,11 +125,7 @@
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
-            "projectReferences": {
-              "F:\\Collected school documents\\School 22-23\\S5\\SE project\\HPCM\\DataAccessLayer\\DataAccessLayer.csproj": {
-                "projectPath": "F:\\Collected school documents\\School 22-23\\S5\\SE project\\HPCM\\DataAccessLayer\\DataAccessLayer.csproj"
-              }
-            }
+            "projectReferences": {}
           }
         },
         "warningProperties": {

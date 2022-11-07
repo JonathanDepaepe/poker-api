@@ -1,8 +1,10 @@
 ﻿using AutoMapper.QueryableExtensions;
 using DAL.Interfaces;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO;
 
 namespace WebApi.Controllers;
 
@@ -36,7 +38,7 @@ public class ClubController : ControllerBase
     }
     
     [HttpPost (Name="CreateClub")]
-    public async Task<ActionResult<Club>> CreateClub([FromBody]Club newClub)
+    public async Task<ActionResult<Club>> CreateClub([FromBody]ClubCreationDTO newClub)
     {
         return (await _clubRepository.CreateClub(newClub) is Club createdClub)
             ? Created(Url.Link("CreateClub", new { id = createdClub?.ClubId }) ?? throw new InvalidOperationException(), createdClub)

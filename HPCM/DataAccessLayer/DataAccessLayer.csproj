@@ -26,7 +26,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Properties" />
+      <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
 

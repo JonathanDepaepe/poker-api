@@ -1,27 +1,29 @@
-﻿using DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using DAL.Interfaces;
+using DataAccessLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using DataAccessLayer.Exceptions;
+using Shared.DTO;
 
-
-namespace DAL.Repositories
+namespace DataAccessLayer.Repositories
 {
     public class ClubRepository : IClubRepository
     {
         private readonly HpcmContext _db;
+
+        public ClubRepository(HpcmContext db)
+        {
+            _db = db;
+        }
 
         public Task<Club?> AlterClub(Club newClubDetails)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Club?> CreateClub(Club newClubDetails)
+        public async Task<Club?> CreateClub(ClubCreationDTO newClubDetails)
         {
             try
             {
@@ -86,7 +88,21 @@ namespace DAL.Repositories
         {
             try
             {
-                return _db.Clubs;
+                return _db.Clubs
+                    .Include(c=>c.Owner)
+                    .Include(c=>c.Announcements)
+                    .Include(c=>c.Leagues)
+                    .Select(b=>new Club
+                    {
+                        ClubId = b.ClubId,
+                        OwnerId = b.OwnerId,
+                        Name = b.Name,
+                        PictureUrl = b.PictureUrl,
+                        Public = b.Public,
+                        CreationDateTime = b.CreationDateTime,
+                        Owner = b.Owner
+                    });
+                 
             }
             catch (Exception e)
             {
@@ -98,11 +114,10 @@ namespace DAL.Repositories
         {
             try
             {
-                return _db.Clubs.Where(s => s.ClubId == clubId);
+                return GetClubs().Where(s => s.ClubId == clubId);
             }
             catch (Exception e)
             {
-
                 throw new Exception("Unable to retrieve club by id from db| ",e);
             }
         }

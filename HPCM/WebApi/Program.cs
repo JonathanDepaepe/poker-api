@@ -1,5 +1,5 @@
 using DAL.Interfaces;
-using DAL.Repositories;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<HpcmContext>
-    (options => options.UseSqlServer(config.GetConnectionString("HPCMDataBase")));
+    (options => options.UseSqlServer(config.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
 
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();

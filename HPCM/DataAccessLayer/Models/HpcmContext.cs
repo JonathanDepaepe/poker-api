@@ -79,7 +79,6 @@ namespace DataAccessLayer.Models
 
                 entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Clubs)
-                    .HasForeignKey(d => d.OwnerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("OwnerRelation");
             });

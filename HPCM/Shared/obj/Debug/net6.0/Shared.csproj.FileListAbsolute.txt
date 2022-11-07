@@ -22,6 +22,3 @@ F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\obj\Debug\n
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\obj\Debug\net6.0\refint\Shared.dll
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\obj\Debug\net6.0\Shared.pdb
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\obj\Debug\net6.0\ref\Shared.dll
-F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\bin\Debug\net6.0\DataAccessLayer.dll
-F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\bin\Debug\net6.0\DataAccessLayer.pdb
-F:\Collected school documents\School 22-23\S5\SE project\HPCM\Shared\obj\Debug\net6.0\Shared.csproj.CopyComplete

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccessLayer.Models;
+﻿using DataAccessLayer.Models;
+using Shared.DTO;
 
-namespace DAL.Interfaces
+namespace DataAccessLayer.Interfaces
 {
     public interface IClubRepository
     {
         IQueryable<Club> GetClubs();
         IQueryable<Club> GetClubById(int clubId);
-        Task<Club?> CreateClub(Club newClubDetails);
+        Task<Club?> CreateClub(ClubCreationDTO newClubDetails);
         Task<Club?> AlterClub(Club newClubDetails);
         Task<Club?> DeleteClub(Club clubToBeDeleted);
         Task<League?> CreateClubLeague(League newLeagueDetails);

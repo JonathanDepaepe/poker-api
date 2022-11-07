@@ -3995,6 +3995,7 @@
           "Microsoft.NETCore.Platforms": "6.0.5",
           "MinimalApi.EndPointDefinitions": "1.0.0",
           "Newtonsoft.Json": "13.0.1",
+          "Shared": "1.0.0",
           "Swashbuckle.AspNetCore": "6.4.0"
         },
         "compile": {
@@ -4010,7 +4011,6 @@
         "dependencies": {
           "AutoMapper": "11.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
-          "DataAccessLayer": "1.0.0",
           "FluentUtils.MinimalApis.EndpointDefinitions": "1.2.1",
           "Microsoft.NETCore.Platforms": "6.0.5",
           "MinimalApi.EndPointDefinitions": "1.0.0",

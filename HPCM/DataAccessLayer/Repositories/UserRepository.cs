@@ -8,6 +8,11 @@ namespace DataAccessLayer.Repositories
 
         private readonly HpcmContext _db;
 
+        public UserRepository(HpcmContext db)
+        {
+            _db = db;
+        }
+
         public IQueryable<Member> GetMemberById()
         {
             throw new NotImplementedException();
