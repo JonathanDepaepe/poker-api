@@ -17,7 +17,7 @@ public class ClubController : ControllerBase
         _clubRepository = clubRepository;
     }
 
-    [HttpGet]
+    [HttpGet (Name="GetClubs")]
     public async Task<ActionResult<IEnumerable<Club>>> GetClubs(){
 
         return (_clubRepository.GetClubs() is IQueryable<Club> allClubs)
@@ -26,7 +26,7 @@ public class ClubController : ControllerBase
             : NotFound("No clubs found");
     }
     
-    [HttpGet]
+    [HttpGet("{id:int}",Name="GetClubById")]
     public async Task<ActionResult<IEnumerable<Club>>> GetClub(int id){
 
         return (_clubRepository.GetClubById(id) is IQueryable<Club> clubById)
@@ -35,14 +35,12 @@ public class ClubController : ControllerBase
             : NotFound($"No club found with id {id}");
     }
     
-    [HttpPost]
-    public async Task<ActionResult<Club>> CreateClub([FromBody]  newBook)
+    [HttpPost (Name="CreateClub")]
+    public async Task<ActionResult<Club>> CreateClub([FromBody]Club newClub)
     {
-        return (await _bookRepo.CreateBookAsync(_mapper.Map<Book>(newBook)) is Book createdBook)
-            ? Created(Url.Link("GetBookById", new { id = createdBook?.Bno }),
-                _mapper.Map<BookReadDTO>(createdBook))
+        return (await _clubRepository.CreateClub(newClub) is Club createdClub)
+            ? Created(Url.Link("CreateClub", new { id = createdClub?.ClubId }) ?? throw new InvalidOperationException(), createdClub)
             : BadRequest();
-        //Or: return CreatedAtAction(nameof(GetBook), new { id = createdBook.Bno }, _mapper.Map<BookReadDTO>(createdBook));
     }
 
     

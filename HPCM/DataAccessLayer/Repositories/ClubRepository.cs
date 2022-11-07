@@ -5,6 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using DataAccessLayer.Exceptions;
+
 
 namespace DAL.Repositories
 {
@@ -12,12 +16,12 @@ namespace DAL.Repositories
     {
         private readonly HpcmContext _db;
 
-        public bool AlterClub(Club newClubDetails)
+        public Task<Club?> AlterClub(Club newClubDetails)
         {
             throw new NotImplementedException();
         }
 
-        public Club CreateClub(Club newClubDetails)
+        public async Task<Club?> CreateClub(Club newClubDetails)
         {
             try
             {
@@ -29,9 +33,9 @@ namespace DAL.Repositories
                     Public = newClubDetails.Public,
                     CreationDateTime = DateTime.UtcNow
                 };
-                _db.Clubs.Add(newClub);
-                _db.SaveChanges();
-                return _db.Clubs.OrderBy(s => s.ClubId).Last();
+                await _db.Clubs.AddAsync(newClub);
+                await SaveAsync();
+                return _db.Clubs.Last();
             }
             catch (Exception e)
             {
@@ -39,7 +43,7 @@ namespace DAL.Repositories
             }
         }
 
-        public League CreateClubLeague(League newLeagueDetails)
+        public async Task<League?> CreateClubLeague(League newLeagueDetails)
         {
             try
             {
@@ -50,9 +54,9 @@ namespace DAL.Repositories
                     Public = newLeagueDetails.Public,
                     Description = newLeagueDetails.Description
                 };
-                _db.Leagues.Add(league);
-                _db.SaveChanges();
-                return _db.Leagues.OrderBy(s => s.LeagueId).Last();
+                await _db.Leagues.AddAsync(league);
+                await SaveAsync();
+                return _db.Leagues.Last();
             }
             catch (Exception e)
             {
@@ -60,14 +64,17 @@ namespace DAL.Repositories
             }
         }
 
-        public bool DeleteClub(int clubId)
+        public async Task<Club?> DeleteClub(Club clubToBeDeleted)
         {
             try
             {
-                _db.Clubs.Remove(_db.Clubs.Find(clubId));
-                _db.SaveChanges();
-                return true;
-
+                Club? clubToDelete = await GetClubByIdAsync(clubToBeDeleted.ClubId);
+                if (clubToDelete is Club)
+                {
+                    _db.Clubs.Remove(clubToDelete);
+                    await SaveAsync();
+                }
+                return clubToDelete;
             }
             catch (Exception e)
             {
@@ -99,52 +106,97 @@ namespace DAL.Repositories
                 throw new Exception("Unable to retrieve club by id from db| ",e);
             }
         }
-
-        public Invitation CreateInvitation(int memberId,int clubId)
+        public async Task<Club?> GetClubByIdAsync(int clubId)
         {
             try
             {
-                return new Invitation()
-                {
-                    MemberId = memberId,
-                    ClubId = clubId,
-                    ExpirationDate = DateTime.UtcNow.AddDays(7),
-                };
+                Club? foundClub = await _db.Clubs
+                    .SingleOrDefaultAsync(b => b.ClubId == clubId);
+                return foundClub;
             }
             catch (Exception e)
             {
-
-                throw new Exception("Unable to get Invitation| ",e);
+                throw new Exception("Unable to retrieve club by id from db| ",e);
             }
         }
 
-        public IQueryable<ClubMember> JoinClubWithInvitation(int memberId, string hash)
+        public async Task<Invitation?> CreateInvitation(int memberId,int clubId,string role)
+        {
+            try
+            {
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+                    
+                    Invitation inv = new Invitation()
+                    {
+                        MemberId = memberId,
+                        ClubId = clubId,
+                        ExpirationDate = DateTime.UtcNow.AddDays(7),
+                        InvitationHash = GetHash(sha256Hash,(memberId.ToString() +DateTime.UtcNow.AddDays(7))),
+                        Role = role
+                    };
+                    
+                    await _db.Invitations.AddAsync(inv);
+                    await SaveAsync();
+                    return inv;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to create Invitation| ",e);
+            }
+        }
+
+        public async Task<ClubMember?> JoinClubWithInvitation(int memberId, string hash)
         {
             try
             {
                 Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
                 if (invitationAttempt.MemberId == memberId)
                 {
-                    _db.ClubMembers.Add(new ClubMember()
+                    ClubMember newMember = new ClubMember()
                     {
                         ClubId = invitationAttempt.ClubId,
                         MemberId = memberId,
                         Role =  invitationAttempt.Role
-                    });
+                    };
+                    await _db.ClubMembers.AddAsync(newMember);
                     _db.Invitations.Remove(invitationAttempt);
-                    _db.SaveChanges();
-                    return _db.ClubMembers.Where(s => s.MemberId == memberId).Where(s => s.ClubId == invitationAttempt.ClubId);
+                    await _db.SaveChangesAsync();
+                    return newMember;
                 }
-                else
-                {
-                    throw new Exception("Invalid attempt at joining club");
-                }
-
+                throw new InvalidInvitationException("Error using invite, wrong member Id");
             }
             catch (Exception e)
             {
                 throw new Exception("Unable to join club| ",e);
             }
         }
+        private async Task<bool> SaveAsync()
+        {
+            return await _db.SaveChangesAsync() > 0;
+        }
+        
+        private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+        {
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            var sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
+        }
+
     }
 }

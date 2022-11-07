@@ -276,3 +276,11 @@ F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\n
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\WebApi.pdb
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\WebApi.genruntimeconfig.cache
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\ref\WebApi.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\AutoMapper.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\FluentUtils.MinimalApis.EndpointDefinitions.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\EndPointDefinitions.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\DataAccessLayer.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Shared.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\DataAccessLayer.pdb
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Shared.pdb

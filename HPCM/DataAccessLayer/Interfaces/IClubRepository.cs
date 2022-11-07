@@ -11,11 +11,11 @@ namespace DAL.Interfaces
     {
         IQueryable<Club> GetClubs();
         IQueryable<Club> GetClubById(int clubId);
-        Club CreateClub(Club newClubDetails);
-        bool AlterClub(Club newClubDetails);
-        bool DeleteClub(int clubId);
-        League CreateClubLeague(League newLeagueDetails);
-        Invitation CreateInvitation(int memberId,int clubId);
-        IQueryable<ClubMember> JoinClubWithInvitation(int memberId, string hash);
+        Task<Club?> CreateClub(Club newClubDetails);
+        Task<Club?> AlterClub(Club newClubDetails);
+        Task<Club?> DeleteClub(Club clubToBeDeleted);
+        Task<League?> CreateClubLeague(League newLeagueDetails);
+        Task<Invitation?> CreateInvitation(int memberId,int clubId,string role);
+        Task<ClubMember?> JoinClubWithInvitation(int memberId, string hash);
     }
 }
