@@ -37,7 +37,7 @@ namespace DataAccessLayer.Repositories
                 };
                 await _db.Clubs.AddAsync(newClub);
                 await SaveAsync();
-                return _db.Clubs.Last();
+                return _db.Clubs.OrderBy(b=>b.ClubId).Last();
             }
             catch (Exception e)
             {
@@ -45,7 +45,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<League?> CreateClubLeague(League newLeagueDetails)
+        public async Task<League?> CreateClubLeague(LeagueCreationDTO newLeagueDetails)
         {
             try
             {
@@ -58,12 +58,54 @@ namespace DataAccessLayer.Repositories
                 };
                 await _db.Leagues.AddAsync(league);
                 await SaveAsync();
-                return _db.Leagues.Last();
+                return _db.Leagues.OrderBy(b=>b.LeagueId).Last();
             }
             catch (Exception e)
             {
                 throw new ArgumentException("Creating new League FAILED, check input Params| ",e.ToString());
             }
+        }
+
+        public IQueryable<League> GetLeagues()
+        {
+            try
+            {
+                IQueryable<League> foundLeagues =
+                    _db.Leagues
+                        .Include(b => b.Club)
+                        .Select(b => new League()
+                        {
+                            LeagueId = b.LeagueId,
+                            ClubId = b.ClubId,
+                            Name = b.Name,
+                            Description = b.Description,
+                            Club = b.Club
+                        });
+                return foundLeagues;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unable to retrieve all leagues",e);
+                throw;
+            }
+        }
+
+        public IQueryable<League> GetLeaguesById(int leagueId)
+        {
+            try
+            {
+                return GetLeagues().Where(b => b.LeagueId == leagueId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unable to retrieve leagues by id",e);
+                throw;
+            }
+        }
+
+        public IQueryable<League> GetLeaguesByClubId(int clubId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Club?> DeleteClub(Club clubToBeDeleted)

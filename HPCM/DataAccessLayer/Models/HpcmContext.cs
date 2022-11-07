@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.DTO;
 
 namespace DataAccessLayer.Models
 {
@@ -78,7 +79,7 @@ namespace DataAccessLayer.Models
                 entity.Property(e => e.PictureUrl).HasMaxLength(500);
 
                 entity.HasOne(d => d.Owner)
-                    .WithMany(p => p.Clubs)
+                    .WithMany(p => p.Clubs )
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("OwnerRelation");
             });

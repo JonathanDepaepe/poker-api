@@ -9,6 +9,16 @@ using Microsoft.Identity.Web;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration;
 
+// Add cors policies
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultPolicy",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7255/api/Club");
+        });
+});
+
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -35,10 +45,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.MapControllers();
 
