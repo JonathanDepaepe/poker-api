@@ -19,7 +19,6 @@ public class ClubController : ControllerBase
     }
 
     [EnableCors("DefaultPolicy")]
-    
     [HttpGet (Name="GetClubs")]
     public async Task<ActionResult<IEnumerable<Club>>> GetClubs(){
 
@@ -49,13 +48,51 @@ public class ClubController : ControllerBase
     }
     
     [EnableCors("DefaultPolicy")]
-    [HttpPost("/api/League")]
+    [HttpPost("/api/League",Name = "CreateLeague")]
     
     public async Task<ActionResult<League>> CreateLeague([FromBody]LeagueCreationDTO newLeague)
     {
-        return (await _clubRepository.CreateClubLeague(newLeague) is League createdClubLeague)
-            ? Created(Url.Link("CreateLeague", new { id = createdClubLeague?.LeagueId }) ?? throw new InvalidOperationException(), createdClubLeague)
-            : BadRequest();
+        try
+        {
+            return (await _clubRepository.CreateClubLeague(newLeague) is League createdClubLeague)
+                ? Created(Url.Link("CreateLeague", new { id = createdClubLeague?.LeagueId }) ?? throw new InvalidOperationException(), createdClubLeague)
+                : BadRequest();
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("unable to create league| ",e);
+        }
+        
+    }
+    
+    [EnableCors("DefaultPolicy")]
+    [HttpGet("/api/League/{id:int}",Name="GetLeagueById")]
+    public async Task<ActionResult<IEnumerable<League>>> GetLeagueById(int id){
+
+        return (_clubRepository.GetLeaguesById(id) is IQueryable<League> leagueById)
+            ? Ok(await leagueById
+                .ToListAsync())
+            : NotFound($"No League found with id {id}");
+    }
+    
+    [EnableCors("DefaultPolicy")]
+    [HttpGet ("/api/League",Name="GetLeagues")]
+    public async Task<ActionResult<IEnumerable<Club>>> GetLeagues(){
+
+        return (_clubRepository.GetLeagues() is IQueryable<League> allLeageus)
+            ? Ok(await allLeageus
+                .ToListAsync())
+            : NotFound("No Leagues found");
+    }
+    
+    [EnableCors("DefaultPolicy")]
+    [HttpGet("/api/League/{clubId:int}",Name="GetLeagueByClubId")]
+    public async Task<ActionResult<IEnumerable<League>>> GetLeagueByClubId(int clubId){
+
+        return (_clubRepository.GetLeaguesByClubId(clubId) is IQueryable<League> leagueByClubId)
+            ? Ok(await leagueByClubId
+                .ToListAsync())
+            : NotFound($"No Leagues found with ClubId {clubId}");
     }
 
     

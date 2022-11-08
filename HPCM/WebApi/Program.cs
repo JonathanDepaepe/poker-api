@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DAL.Interfaces;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -15,13 +16,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("DefaultPolicy",
         policy =>
         {
-            policy.WithOrigins("https://localhost:7255/api/Club");
+            policy.WithOrigins("https://localhost:7255/api/");
         });
 });
 
-// Add services to the container.
+/*// Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));*/
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -34,7 +35,10 @@ builder.Services.AddDbContext<HpcmContext>
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 var app = builder.Build();
 
@@ -45,15 +49,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
-app.UseHttpsRedirection();
 
 app.UseCors();
 

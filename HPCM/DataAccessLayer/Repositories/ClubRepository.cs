@@ -58,7 +58,9 @@ namespace DataAccessLayer.Repositories
                 };
                 await _db.Leagues.AddAsync(league);
                 await SaveAsync();
-                return _db.Leagues.OrderBy(b=>b.LeagueId).Last();
+                League test = _db.Leagues.OrderBy(b=>b.LeagueId).Last();
+                Console.WriteLine("returned league: id:" + test.LeagueId + " Name: " + test.Name + " ClubId" + test.ClubId);
+                return test;
             }
             catch (Exception e)
             {
