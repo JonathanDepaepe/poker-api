@@ -10,6 +10,11 @@ namespace DataAccessLayer.Repositories
     {
         private readonly HpcmContext _db;
 
+        public TournamentRepository(HpcmContext db)
+        {
+            _db = db;
+        }
+
         public IQueryable<Tournament> AlterTournament(Tournament newTournamentDetails)
         {
             try

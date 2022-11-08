@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "/9sZcaKcTrS69kSnxRvR/mY3AakXeMgk3UAK2KwpQNn8t6JVbIrWwBJLAJS7u5jQwQq2D+DYeaRDWqGss1hbXQ==",
+  "dgSpecHash": "BQGejCL4wiLRyxGFvERcTWIufzqVswgv0ppCw6baPQQSAdCjOZp1hdUuK7twv5TZQIZLqwuacVPSPkRN7Wn1dw==",
   "success": true,
   "projectFilePath": "F:\\Collected school documents\\School 22-23\\S5\\SE project\\HPCM\\DataAccessLayer\\DataAccessLayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vdhda\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
-    "C:\\Users\\vdhda\\.nuget\\packages\\fluentutils.minimalapis.endpointdefinitions\\1.2.1\\fluentutils.minimalapis.endpointdefinitions.1.2.1.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
@@ -38,7 +37,6 @@
     "C:\\Users\\vdhda\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
-    "C:\\Users\\vdhda\\.nuget\\packages\\minimalapi.endpointdefinitions\\1.0.0\\minimalapi.endpointdefinitions.1.0.0.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\vdhda\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",

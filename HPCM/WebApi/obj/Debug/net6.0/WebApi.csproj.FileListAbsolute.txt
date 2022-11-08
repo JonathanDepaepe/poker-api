@@ -284,3 +284,11 @@ F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\n
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\WebApi.csproj.CopyComplete
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\WebApi.genruntimeconfig.cache
 F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\obj\Debug\net6.0\ref\WebApi.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\WebApi.staticwebassets.runtime.json
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.UI.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.Extensions.FileProviders.Embedded.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+F:\Collected school documents\School 22-23\S5\SE project\HPCM\WebApi\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll

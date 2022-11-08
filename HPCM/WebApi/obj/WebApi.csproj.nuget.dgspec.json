@@ -48,10 +48,6 @@
               "target": "Package",
               "version": "[11.0.0, )"
             },
-            "FluentUtils.MinimalApis.EndpointDefinitions": {
-              "target": "Package",
-              "version": "[1.2.1, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.8, )"
@@ -69,10 +65,6 @@
             "Microsoft.NETCore.Platforms": {
               "target": "Package",
               "version": "[6.0.5, )"
-            },
-            "MinimalApi.EndPointDefinitions": {
-              "target": "Package",
-              "version": "[1.0.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -146,17 +138,9 @@
               "target": "Package",
               "version": "[11.0.0, )"
             },
-            "FluentUtils.MinimalApis.EndpointDefinitions": {
-              "target": "Package",
-              "version": "[1.2.1, )"
-            },
             "Microsoft.NETCore.Platforms": {
               "target": "Package",
               "version": "[6.0.5, )"
-            },
-            "MinimalApi.EndPointDefinitions": {
-              "target": "Package",
-              "version": "[1.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -227,7 +211,7 @@
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[6.0.9, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
               "target": "Package",
@@ -243,14 +227,6 @@
               "target": "Package",
               "version": "[6.0.10, )"
             },
-            "Microsoft.Identity.Web": {
-              "target": "Package",
-              "version": "[1.24.1, )"
-            },
-            "Microsoft.Identity.Web.UI": {
-              "target": "Package",
-              "version": "[1.16.0, )"
-            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[6.0.10, )"
@@ -258,6 +234,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.15.0, )"
             }
           },
           "imports": [

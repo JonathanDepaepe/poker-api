@@ -12,7 +12,6 @@
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-        <PackageReference Include="FluentUtils.MinimalApis.EndpointDefinitions" Version="1.2.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
@@ -20,7 +19,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.5" />
-        <PackageReference Include="MinimalApi.EndPointDefinitions" Version="1.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>

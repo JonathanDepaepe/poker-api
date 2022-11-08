@@ -48,17 +48,9 @@
               "target": "Package",
               "version": "[11.0.0, )"
             },
-            "FluentUtils.MinimalApis.EndpointDefinitions": {
-              "target": "Package",
-              "version": "[1.2.1, )"
-            },
             "Microsoft.NETCore.Platforms": {
               "target": "Package",
               "version": "[6.0.5, )"
-            },
-            "MinimalApi.EndPointDefinitions": {
-              "target": "Package",
-              "version": "[1.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

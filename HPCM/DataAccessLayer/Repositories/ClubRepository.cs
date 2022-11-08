@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using DAL.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -18,7 +17,7 @@ namespace DataAccessLayer.Repositories
             _db = db;
         }
 
-        public Task<Club?> AlterClub(Club newClubDetails)
+        public Task<Club?> AlterClub(ClubCreationDTO newClubDetails)
         {
             throw new NotImplementedException();
         }
@@ -87,8 +86,7 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unable to retrieve all leagues",e);
-                throw;
+                throw new Exception("Unable to retrieve all leagues",e);
             }
         }
 
@@ -100,14 +98,20 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unable to retrieve leagues by id",e);
-                throw;
+                throw new Exception("Unable to retrieve leagues by id",e);
             }
         }
 
         public IQueryable<League> GetLeaguesByClubId(int clubId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return GetLeagues().Where(b => b.ClubId == clubId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve Leagues by ClubId | " + e);
+            }
         }
 
         public async Task<Club?> DeleteClub(Club clubToBeDeleted)
@@ -115,11 +119,9 @@ namespace DataAccessLayer.Repositories
             try
             {
                 Club? clubToDelete = await GetClubByIdAsync(clubToBeDeleted.ClubId);
-                if (clubToDelete is Club)
-                {
-                    _db.Clubs.Remove(clubToDelete);
-                    await SaveAsync();
-                }
+                if (clubToDelete is null) throw new ArgumentException("Unable to find Specified club");
+                _db.Clubs.Remove(clubToDelete);
+                await SaveAsync();
                 return clubToDelete;
             }
             catch (Exception e)
@@ -146,7 +148,6 @@ namespace DataAccessLayer.Repositories
                         CreationDateTime = b.CreationDateTime,
                         Owner = b.Owner
                     });
-                 
             }
             catch (Exception e)
             {
@@ -165,6 +166,7 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Unable to retrieve club by id from db| ",e);
             }
         }
+        
         public async Task<Club?> GetClubByIdAsync(int clubId)
         {
             try

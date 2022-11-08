@@ -31,25 +31,6 @@
           "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
-      "FluentUtils.MinimalApis.EndpointDefinitions/1.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0"
-        },
-        "compile": {
-          "lib/net6.0/FluentUtils.MinimalApis.EndpointDefinitions.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/FluentUtils.MinimalApis.EndpointDefinitions.dll": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
-      },
       "Microsoft.CSharp/4.7.0": {
         "type": "package",
         "compile": {
@@ -143,22 +124,6 @@
             "related": ".pdb;.xml"
           }
         }
-      },
-      "MinimalApi.EndPointDefinitions/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/EndPointDefinitions.dll": {
-            "related": ".runtimeconfig.json"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/EndPointDefinitions.dll": {
-            "related": ".runtimeconfig.json"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Swashbuckle.AspNetCore/6.4.0": {
         "type": "package",
@@ -269,19 +234,6 @@
         "automapper.extensions.microsoft.dependencyinjection.nuspec",
         "icon.png",
         "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll"
-      ]
-    },
-    "FluentUtils.MinimalApis.EndpointDefinitions/1.2.1": {
-      "sha512": "mK8veFtfcpNtZ7PxkqcK0fgDAq6TDePahToEgzl+2g2NTmSn9QBm7RAKQMpFqn7qxy5mHdYdKSIGGD5TQzhqlA==",
-      "type": "package",
-      "path": "fluentutils.minimalapis.endpointdefinitions/1.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "fluentutils.minimalapis.endpointdefinitions.1.2.1.nupkg.sha512",
-        "fluentutils.minimalapis.endpointdefinitions.nuspec",
-        "lib/net6.0/FluentUtils.MinimalApis.EndpointDefinitions.dll",
-        "lib/net6.0/FluentUtils.MinimalApis.EndpointDefinitions.xml"
       ]
     },
     "Microsoft.CSharp/4.7.0": {
@@ -689,19 +641,6 @@
         "microsoft.openapi.nuspec"
       ]
     },
-    "MinimalApi.EndPointDefinitions/1.0.0": {
-      "sha512": "SL3SweUw3TBel9wzoqjiDz7+jynvE5syqDjWXpT1wL73RdIx1hNcT5Eiw4pMCFzRg9mK1+QqYZmscH0y/EixBw==",
-      "type": "package",
-      "path": "minimalapi.endpointdefinitions/1.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net6.0/EndPointDefinitions.dll",
-        "lib/net6.0/EndPointDefinitions.runtimeconfig.json",
-        "minimalapi.endpointdefinitions.1.0.0.nupkg.sha512",
-        "minimalapi.endpointdefinitions.nuspec"
-      ]
-    },
     "Swashbuckle.AspNetCore/6.4.0": {
       "sha512": "eUBr4TW0up6oKDA5Xwkul289uqSMgY0xGN4pnbOIBqCcN9VKGGaPvHX3vWaG/hvocfGDP+MGzMA0bBBKz2fkmQ==",
       "type": "package",
@@ -813,9 +752,7 @@
     "net6.0": [
       "AutoMapper >= 11.0.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 11.0.0",
-      "FluentUtils.MinimalApis.EndpointDefinitions >= 1.2.1",
       "Microsoft.NETCore.Platforms >= 6.0.5",
-      "MinimalApi.EndPointDefinitions >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.4.0"
     ]
   },
@@ -866,17 +803,9 @@
             "target": "Package",
             "version": "[11.0.0, )"
           },
-          "FluentUtils.MinimalApis.EndpointDefinitions": {
-            "target": "Package",
-            "version": "[1.2.1, )"
-          },
           "Microsoft.NETCore.Platforms": {
             "target": "Package",
             "version": "[6.0.5, )"
-          },
-          "MinimalApi.EndPointDefinitions": {
-            "target": "Package",
-            "version": "[1.0.0, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

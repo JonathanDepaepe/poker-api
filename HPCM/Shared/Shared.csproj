@@ -11,9 +11,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="11.0.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-        <PackageReference Include="FluentUtils.MinimalApis.EndpointDefinitions" Version="1.2.1" />
         <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.5" />
-        <PackageReference Include="MinimalApi.EndPointDefinitions" Version="1.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 
     </ItemGroup>

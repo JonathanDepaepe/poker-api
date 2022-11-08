@@ -3,11 +3,10 @@ using DAL.Interfaces;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+
 ConfigurationManager config = builder.Configuration;
 
 // Add cors policies
@@ -31,6 +30,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<HpcmContext>
     (options => options.UseSqlServer(config.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+
 
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
