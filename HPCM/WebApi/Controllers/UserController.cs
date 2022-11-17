@@ -8,7 +8,7 @@ namespace WebApi.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-
+    /*
     private readonly IUserRepository _userRepository;
 
     public UserController(IUserRepository repository)
@@ -34,5 +34,5 @@ public class UserController : ControllerBase
     {
         var users = _userRepository.GetAll();
         return Ok(users);
-    }
+    }*/
 }

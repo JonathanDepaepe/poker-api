@@ -185,6 +185,7 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
+                //idea, create defined invite hash for club so multiple members can join. Deletable in club management
                 using (SHA256 sha256Hash = SHA256.Create())
                 {
                     
