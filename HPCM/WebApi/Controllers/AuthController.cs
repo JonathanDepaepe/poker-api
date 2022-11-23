@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using DataAccessLayer.Models;
+using DataAccessLayer.AuthModels;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,64 +14,87 @@ namespace WebApi.Controllers;
 [ApiController]
 public class AuthController:ControllerBase
 {
-    
-    
-        public IConfiguration _configuration;
-        private readonly HpcmContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IConfiguration _configuration;
 
-        public AuthController(IConfiguration configuration, HpcmContext context)
+    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    {
+        _userManager = userManager;
+        _configuration = configuration;
+    }
+
+    [HttpPost]
+    [Route("login")]
+    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    {
+        var user = await _userManager.FindByNameAsync(model.Username);
+        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            _context = context;
-            _configuration = configuration;
-        }
+            var userRoles = await _userManager.GetRolesAsync(user);
 
-        [EnableCors("DefaultPolicy")]
-        [HttpPost(Name ="Register")]
-        public async Task<IActionResult> Post(Member checkMember)
-        {
-            if (checkMember != null && checkMember.Email != null && checkMember.HashedPassword != null)
-            {
-                var user = await GetUser(checkMember.Email, checkMember.HashedPassword);
-
-                if (user != null)
+            var authClaims = new List<Claim>
                 {
-                    //create claims details based on the user information
-                    var claims = new[] {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("MemberId", user.MemberId.ToString()),
-                        new Claim("Name", user.Name),
-                        new Claim("UserName", user.Nickname),
-                        new Claim("Email", user.Email),
-                        new Claim("ProfilePictureUrl", user.ProfilePictureUrl)
-                    };
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
 
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                    var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                    var token = new JwtSecurityToken(
-                        _configuration["Jwt:Issuer"],
-                        _configuration["Jwt:Audience"],
-                        claims,
-                        expires: DateTime.UtcNow.AddMinutes(10),
-                        signingCredentials: signIn);
-
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
-                }
-                else
-                {
-                    return BadRequest("Invalid credentials");
-                }
-            }
-            else
+            foreach (var userRole in userRoles)
             {
-                return BadRequest();
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
-        }
 
-        private async Task<Member> GetUser(string email, string password)
-        {
-            return await _context.Members.FirstOrDefaultAsync(u => u.Email == email && u.HashedPassword == password);
+            var token = GetToken(authClaims);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            });
         }
-    
+        return Unauthorized();
+    }
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    {
+        try
+        {
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, "User with this username already exists!");
+
+            IdentityUser user = new()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create user, please try again.");
+
+            return Ok("User created successfully.");
+        }
+        catch (Exception e)
+        {
+            throw new Exception("creating new user failed| " + e);
+        }
+    }
+
+    private JwtSecurityToken GetToken(List<Claim> authClaims)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Audience"],
+            authClaims,
+            expires: DateTime.UtcNow.AddMinutes(10),
+            signingCredentials: signIn);
+
+        return token;
+    }
 }
+
+    
