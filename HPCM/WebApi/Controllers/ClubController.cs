@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,8 @@ public class ClubController : ControllerBase
                 .ToListAsync())
             : NotFound($"No club found with id {id}");
     }
-    
+
+    [Authorize]
     [EnableCors("DefaultPolicy")]
     [HttpPost (Name="CreateClub")]
     public async Task<ActionResult<Club>> CreateClub([FromBody]ClubCreationDTO newClub)
@@ -86,7 +88,7 @@ public class ClubController : ControllerBase
     }
     
     [EnableCors("DefaultPolicy")]
-    [HttpGet("/api/League/{clubId:int}",Name="GetLeagueByClubId")]
+    [HttpGet("/api/League/Club={clubId:int}",Name="GetLeagueByClubId")]
     public async Task<ActionResult<IEnumerable<League>>> GetLeagueByClubId(int clubId){
 
         return (_clubRepository.GetLeaguesByClubId(clubId) is IQueryable<League> leagueByClubId)

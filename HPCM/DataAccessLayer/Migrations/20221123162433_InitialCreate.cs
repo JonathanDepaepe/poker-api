@@ -5,10 +5,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "LoginModel",
+                columns: table => new
+                {
+                    Username = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
             migrationBuilder.CreateTable(
                 name: "MemberType",
                 columns: table => new
@@ -20,6 +31,29 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__MemberTy__516F03B5D856EE9F", x => x.TypeId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RegisterModel",
+                columns: table => new
+                {
+                    Username = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Response",
+                columns: table => new
+                {
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -350,6 +384,15 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Leagues");
+
+            migrationBuilder.DropTable(
+                name: "LoginModel");
+
+            migrationBuilder.DropTable(
+                name: "RegisterModel");
+
+            migrationBuilder.DropTable(
+                name: "Response");
 
             migrationBuilder.DropTable(
                 name: "TournamentEntries");

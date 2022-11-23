@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(HpcmContext))]
-    [Migration("20221107143906_Initial")]
-    partial class Initial
+    [Migration("20221123162433_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -194,6 +194,20 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Leagues");
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.LoginModel", b =>
+                {
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.ToTable("LoginModel", (string)null);
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Member", b =>
                 {
                     b.Property<int>("MemberId")
@@ -253,6 +267,36 @@ namespace DataAccessLayer.Migrations
                         .HasName("PK__MemberTy__516F03B5D856EE9F");
 
                     b.ToTable("MemberType", (string)null);
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.RegisterModel", b =>
+                {
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.ToTable("RegisterModel", (string)null);
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Response", b =>
+                {
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("Response", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Tournament", b =>

@@ -15,8 +15,11 @@ public class UserController : ControllerBase
     {
         _userRepository = repository;
     }
+    
 
 
+<<<<<<< HEAD
+=======
     [HttpPost("authenticate")]
     public IActionResult Authenticate(AuthenticateRequest model)
     {

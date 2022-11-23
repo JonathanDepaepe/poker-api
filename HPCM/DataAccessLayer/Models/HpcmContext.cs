@@ -26,6 +26,9 @@ namespace DataAccessLayer.Models
         public virtual DbSet<TournamentEntry> TournamentEntries { get; set; } = null!;
         public virtual DbSet<TournamentLink> TournamentLinks { get; set; } = null!;
         public virtual DbSet<TournamentReservation> TournamentReservations { get; set; } = null!;
+        public virtual DbSet<LoginModel> LoginModel { get; set; } = null!;
+        public virtual DbSet<RegisterModel> RegisterModel { get; set; } = null!;
+        public virtual DbSet<Response> Response { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -153,7 +156,44 @@ namespace DataAccessLayer.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserJWTConnection");
             });
+            
+            modelBuilder.Entity<LoginModel>(entity =>
+            {
+                entity.HasNoKey();
 
+                entity.ToTable("LoginModel");
+                
+                entity.Property(e => e.Username).HasMaxLength(500);
+
+                entity.Property(e => e.Password);
+                
+            });
+            
+            modelBuilder.Entity<RegisterModel>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("RegisterModel");
+                
+                entity.Property(e => e.Username).HasMaxLength(500);
+                entity.Property(e => e.Email).HasMaxLength(500);
+                entity.Property(e => e.Password);
+                
+            });
+            
+            modelBuilder.Entity<Response>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("Response");
+                
+                entity.Property(e => e.Status);
+
+                entity.Property(e => e.Message);
+                
+            });
+
+            
             modelBuilder.Entity<League>(entity =>
             {
                 entity.HasIndex(e => e.ClubId, "ClubLeagueRelation");
