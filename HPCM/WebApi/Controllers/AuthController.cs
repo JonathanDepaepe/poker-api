@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol;
 
 namespace WebApi.Controllers;
 
@@ -72,7 +73,7 @@ public class AuthController:ControllerBase
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create user, please try again.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create user, please try again. " + result.Errors.ToJson());
 
             return Ok("User created successfully.");
         }
