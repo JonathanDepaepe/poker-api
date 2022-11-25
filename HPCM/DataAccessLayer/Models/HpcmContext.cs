@@ -90,7 +90,8 @@ namespace DataAccessLayer.Models
 
             modelBuilder.Entity<ClubMember>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.ClubId,e.MemberId, e.Role })
+                    .HasName("ClubMembers_PK");
 
                 entity.HasIndex(e => e.ClubId, "ClubMembersRelation");
 

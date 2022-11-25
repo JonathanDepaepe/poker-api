@@ -37,7 +37,11 @@ namespace DataAccessLayer.Repositories
                 };
                 await _db.Clubs.AddAsync(newClub);
                 await SaveAsync();
-                return _db.Clubs.OrderBy(b=>b.ClubId).Last();
+                Club createdClub = _db.Clubs.OrderBy(b => b.ClubId).Last();
+
+                //Adds the owner as the admin of the club
+                await JoinClub(newClubDetails.OwnerId, createdClub.ClubId, ClubRoles.AdminRole);
+                return createdClub;
             }
             catch (Exception e)
             {
@@ -260,18 +264,19 @@ namespace DataAccessLayer.Repositories
             try
             {
                 Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
+                var memberExists = _db.ClubMembers.Where(c => c.ClubId == invitationAttempt.ClubId && c.MemberId == memberId);
+                if (memberExists != null)
+                {
+                    throw new Exception($"{memberId} already exists in the player base of the club.");
+                }
+                    
+
                 if (invitationAttempt.MemberId == memberId)
                 {
-                    ClubMember newMember = new ClubMember()
-                    {
-                        ClubId = invitationAttempt.ClubId,
-                        MemberId = memberId,
-                        Role =  invitationAttempt.Role
-                    };
-                    await _db.ClubMembers.AddAsync(newMember);
+                    ClubMember createdMember = await JoinClub(invitationAttempt.MemberId, invitationAttempt.ClubId,invitationAttempt.Role);
                     _db.Invitations.Remove(invitationAttempt);
                     await _db.SaveChangesAsync();
-                    return newMember;
+                    return createdMember;
                 }
                 throw new InvalidInvitationException("Error using invite, wrong member Id");
             }
@@ -306,6 +311,43 @@ namespace DataAccessLayer.Repositories
             return sBuilder.ToString();
         }
 
+        public async Task<ClubMember> JoinClub(string memberId, int clubId,ClubRoles role)
+        {
+            try
+            {
 
+                ClubMember newClubMember = new()
+                {
+                    ClubId = clubId,
+                    MemberId = memberId,
+                    Role = role
+                };
+                IQueryable<ClubMember> currentClubMembers = RetrieveClubMembers(clubId);
+                if (currentClubMembers.Any(o=>o.ClubId==newClubMember.ClubId&&o.MemberId==newClubMember.MemberId)) 
+                {
+                    throw new Exception($"{memberId} already exists in the player base of the club.");
+                }
+                
+                await _db.ClubMembers.AddAsync(newClubMember);
+                await SaveAsync();
+                return _db.ClubMembers.OrderBy(b => b.MemberId).Last();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Creating new club FAILED, check input Params", e.ToString());
+            }
+        }
+
+        public IQueryable<ClubMember?> RetrieveClubMembers(int clubId)
+        {
+            try
+            {
+                return _db.ClubMembers.Where(c => c.ClubId == clubId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve all club members| " + e);
+            }
+        }
     }
 }
