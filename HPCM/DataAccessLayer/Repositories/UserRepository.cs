@@ -23,15 +23,15 @@ namespace DataAccessLayer.Repositories
                 Member newMember = new()
                 {
                     MemberId = createdUser.Id,
-                    
+                    Name = "",
                     Nickname = createdUser.UserName,
                     Email = createdUser.Email,
-                    MemberAssignedType = MemberTypes.BaseMember
-                    
+                    MemberAssignedType = MemberTypes.BaseMember,
+                    ProfilePictureUrl = ""
                 };
                 await _db.Members.AddAsync(newMember);
                 await SaveAsync();
-                return await _db.Members.LastAsync();
+                return newMember;
             }
             catch (Exception e)
             {
@@ -44,7 +44,6 @@ namespace DataAccessLayer.Repositories
             throw new NotImplementedException();
         }
 
-        
 
         private async Task<bool> SaveAsync()
         {

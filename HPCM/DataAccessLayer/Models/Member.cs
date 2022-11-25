@@ -23,8 +23,8 @@ namespace DataAccessLayer.Models
 
     public enum MemberTypes: Int32
     {
-        BaseMember=0,
-        GhostMember=1,
+        GhostMember=0,
+        BaseMember=1,
         PayingMember=10,
         AdminMember=100
     }
