@@ -58,7 +58,6 @@ namespace DataAccessLayer.Repositories
                 await _db.Leagues.AddAsync(league);
                 await SaveAsync();
                 League test = _db.Leagues.OrderBy(b=>b.LeagueId).Last();
-                Console.WriteLine("returned league: id:" + test.LeagueId + " Name: " + test.Name + " ClubId" + test.ClubId);
                 return test;
             }
             catch (Exception e)
@@ -181,7 +180,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<Invitation?> CreateInvitation(int memberId,int clubId,string role)
+        public async Task<Invitation?> CreateInvitation(string memberId,int clubId,ClubRoles role)
         {
             try
             {
@@ -209,7 +208,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<ClubMember?> JoinClubWithInvitation(int memberId, string hash)
+        public async Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash)
         {
             try
             {
@@ -260,5 +259,14 @@ namespace DataAccessLayer.Repositories
             return sBuilder.ToString();
         }
 
+        public IQueryable<Club> GetPublicClubs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<Club> GetClubByMemberId(int clubId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -139,7 +139,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public TournamentEntry JoinTournamentAfterStart(int tournamentId, int memberId)
+        public TournamentEntry JoinTournamentAfterStart(int tournamentId, string memberId)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public TournamentReservation JoinTournamentUsingReservation(int tournamentId, int memberId)
+        public TournamentReservation JoinTournamentUsingReservation(int tournamentId, string memberId)
         {
             try
             {

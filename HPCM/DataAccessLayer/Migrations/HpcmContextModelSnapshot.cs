@@ -37,8 +37,9 @@ namespace DataAccessLayer.Migrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -77,15 +78,16 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PictureUrl")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<short>("Public")
-                        .HasColumnType("smallint");
+                    b.Property<bool>("Public")
+                        .HasColumnType("bit");
 
                     b.HasKey("ClubId");
 
@@ -99,13 +101,13 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("ClubId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
+                    b.Property<string>("MemberId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Role")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("int");
 
                     b.HasIndex(new[] { "ClubId" }, "ClubMembersRelation");
 
@@ -128,38 +130,19 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Role")
+                    b.Property<string>("MemberId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Role")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("int");
 
                     b.HasIndex(new[] { "ClubId" }, "ClubRelation");
 
                     b.HasIndex(new[] { "MemberId" }, "UserRelation");
 
                     b.ToTable("Invitation", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Jwt", b =>
-                {
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("TokenExpirationDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)");
-
-                    b.HasIndex(new[] { "MemberId" }, "UserJWTConnection");
-
-                    b.ToTable("Jwt", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.League", b =>
@@ -182,8 +165,8 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<short>("Public")
-                        .HasColumnType("smallint");
+                    b.Property<bool>("Public")
+                        .HasColumnType("bit");
 
                     b.HasKey("LeagueId");
 
@@ -194,20 +177,17 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Member", b =>
                 {
-                    b.Property<int>("MemberId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberId"), 1L, 1);
+                    b.Property<string>("MemberId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("HashedPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MemberAssignedType")
+                        .HasMaxLength(255)
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -224,33 +204,12 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("int");
+                    b.HasKey("MemberId")
+                        .HasName("PK__MemberId");
 
-                    b.HasKey("MemberId");
-
-                    b.HasIndex(new[] { "TypeId" }, "UserTypeRelation");
+                    b.HasIndex(new[] { "MemberId" }, "AspNetUserIdRelation");
 
                     b.ToTable("Member", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.MemberType", b =>
-                {
-                    b.Property<int>("TypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeId"), 1L, 1);
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("TypeId")
-                        .HasName("PK__MemberTy__516F03B5D856EE9F");
-
-                    b.ToTable("MemberType", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.Tournament", b =>
@@ -279,8 +238,8 @@ namespace DataAccessLayer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<short>("Public")
-                        .HasColumnType("smallint");
+                    b.Property<bool>("Public")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasPrecision(0)
@@ -298,8 +257,9 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.TournamentEntry", b =>
                 {
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
+                    b.Property<string>("MemberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("Position")
                         .HasColumnType("int");
@@ -337,8 +297,9 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.TournamentReservation", b =>
                 {
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
+                    b.Property<string>("MemberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TournamentId")
                         .HasColumnType("int");
@@ -616,17 +577,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Models.Jwt", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .IsRequired()
-                        .HasConstraintName("UserJWTConnection");
-
-                    b.Navigation("Member");
-                });
-
             modelBuilder.Entity("DataAccessLayer.Models.League", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Club", "Club")
@@ -636,17 +586,6 @@ namespace DataAccessLayer.Migrations
                         .HasConstraintName("ClubLeagueRelation");
 
                     b.Navigation("Club");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Member", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.MemberType", "Type")
-                        .WithMany("Members")
-                        .HasForeignKey("TypeId")
-                        .IsRequired()
-                        .HasConstraintName("UserTypeRelation");
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.TournamentEntry", b =>
@@ -761,11 +700,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Announcements");
 
                     b.Navigation("Clubs");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.MemberType", b =>
-                {
-                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

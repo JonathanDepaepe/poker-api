@@ -6,7 +6,7 @@ namespace DataAccessLayer.Models
     {
         public int PostId { get; set; }
         public int ClubId { get; set; }
-        public int CreatorId { get; set; }
+        public string CreatorId { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public DateTime CreationDateTime { get; set; }

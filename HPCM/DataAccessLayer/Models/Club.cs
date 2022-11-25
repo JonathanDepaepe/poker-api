@@ -13,10 +13,10 @@ namespace DataAccessLayer.Models
         }
 
         public int ClubId { get; set; }
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; }
         public string Name { get; set; } = null!;
         public string? PictureUrl { get; set; }
-        public short Public { get; set; }
+        public bool Public { get; set; }
         public DateTime CreationDateTime { get; set; }
 
         public virtual Member Owner { get; set; } = null!;

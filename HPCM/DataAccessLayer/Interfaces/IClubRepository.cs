@@ -6,7 +6,9 @@ namespace DataAccessLayer.Interfaces
     public interface IClubRepository
     {
         IQueryable<Club> GetClubs();
+        IQueryable<Club> GetPublicClubs();
         IQueryable<Club> GetClubById(int clubId);
+        IQueryable<Club> GetClubByMemberId(int clubId);
         Task<Club?> CreateClub(ClubCreationDTO newClubDetails);
         Task<Club?> AlterClub(ClubCreationDTO newClubDetails);
         Task<Club?> DeleteClub(Club clubToBeDeleted);
@@ -14,7 +16,7 @@ namespace DataAccessLayer.Interfaces
         IQueryable<League> GetLeagues();
         IQueryable<League> GetLeaguesById(int leagueId);
         IQueryable<League> GetLeaguesByClubId(int clubId);
-        Task<Invitation?> CreateInvitation(int memberId,int clubId,string role);
-        Task<ClubMember?> JoinClubWithInvitation(int memberId, string hash);
+        Task<Invitation?> CreateInvitation(string memberId,int clubId,ClubRoles role);
+        Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash);
     }
 }

@@ -10,16 +10,22 @@ namespace DataAccessLayer.Models
             Clubs = new HashSet<Club>();
         }
 
-        public int MemberId { get; set; }
-        public string Name { get; set; } = null!;
+        public string MemberId { get; set; }
+        public string Name { get; set; }
         public string Nickname { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string HashedPassword { get; set; } = null!;
-        public int TypeId { get; set; }
-        public string ProfilePictureUrl { get; set; } = null!;
+        public string Email { get; set; }
+        public MemberTypes MemberAssignedType {get;set;}
+        public string ProfilePictureUrl { get; set;} = null!;
 
-        public virtual MemberType Type { get; set; } = null!;
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<Club> Clubs { get; set; }
+    }
+
+    public enum MemberTypes: Int32
+    {
+        BaseMember=0,
+        GhostMember=1,
+        PayingMember=10,
+        AdminMember=100
     }
 }

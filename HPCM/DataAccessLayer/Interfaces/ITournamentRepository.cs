@@ -15,8 +15,8 @@ namespace DAL.Interfaces
         Tournament CreateTournament(Tournament tournamentDetails, int clubId, int leagueId);
         bool DeleteTournament(int tournamentId);
         IQueryable<Tournament> AlterTournament(Tournament newTournamentDetails);
-        TournamentReservation JoinTournamentUsingReservation(int tournamentId, int memberId);
-        TournamentEntry JoinTournamentAfterStart(int tournamentId,int memberId);
+        TournamentReservation JoinTournamentUsingReservation(int tournamentId, string memberId);
+        TournamentEntry JoinTournamentAfterStart(int tournamentId,string memberId);
         void StartTournament(int tournamentId);
         IQueryable<Member> GetTournamentPlayers(int tournamentId);
 

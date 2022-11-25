@@ -21,10 +21,8 @@ namespace DataAccessLayer.Models
         public virtual DbSet<Club> Clubs { get; set; } = null!;
         public virtual DbSet<ClubMember> ClubMembers { get; set; } = null!;
         public virtual DbSet<Invitation> Invitations { get; set; } = null!;
-        public virtual DbSet<Jwt> Jwts { get; set; } = null!;
         public virtual DbSet<League> Leagues { get; set; } = null!;
         public virtual DbSet<Member> Members { get; set; } = null!;
-        public virtual DbSet<MemberType> MemberTypes { get; set; } = null!;
         public virtual DbSet<Tournament> Tournaments { get; set; } = null!;
         public virtual DbSet<TournamentEntry> TournamentEntries { get; set; } = null!;
         public virtual DbSet<TournamentLink> TournamentLinks { get; set; } = null!;
@@ -51,7 +49,7 @@ namespace DataAccessLayer.Models
 
                 entity.HasIndex(e => e.ClubId, "ClubPostRelation");
 
-                entity.HasIndex(e => e.CreatorId, "CreatorRelation");
+                entity.HasIndex(e => e.CreatorId, "CreatorRelation"); 
 
                 entity.Property(e => e.CreationDateTime).HasPrecision(0);
 
@@ -140,29 +138,10 @@ namespace DataAccessLayer.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserRelation");
             });
-
-            modelBuilder.Entity<Jwt>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("Jwt");
-
-                entity.HasIndex(e => e.MemberId, "UserJWTConnection");
-
-                entity.Property(e => e.Token).HasMaxLength(500);
-
-                entity.Property(e => e.TokenExpirationDate).HasPrecision(0);
-
-                entity.HasOne(d => d.Member)
-                    .WithMany()
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserJWTConnection");
-            });
-
             
             modelBuilder.Entity<League>(entity =>
             {
+
                 entity.HasIndex(e => e.ClubId, "ClubLeagueRelation");
 
                 entity.Property(e => e.Description).HasMaxLength(3000);
@@ -180,7 +159,12 @@ namespace DataAccessLayer.Models
             {
                 entity.ToTable("Member");
 
-                entity.HasIndex(e => e.TypeId, "UserTypeRelation");
+                entity.HasKey(e => e.MemberId)
+                    .HasName("PK__MemberId");
+
+                entity.HasIndex(e => e.MemberId, "AspNetUserIdRelation");
+
+                entity.Property(e => e.MemberAssignedType).HasMaxLength(255);
 
                 entity.Property(e => e.Email).HasMaxLength(500);
 
@@ -190,22 +174,10 @@ namespace DataAccessLayer.Models
 
                 entity.Property(e => e.ProfilePictureUrl).HasMaxLength(500);
 
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Members)
-                    .HasForeignKey(d => d.TypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserTypeRelation");
+
             });
 
-            modelBuilder.Entity<MemberType>(entity =>
-            {
-                entity.HasKey(e => e.TypeId)
-                    .HasName("PK__MemberTy__516F03B5D856EE9F");
 
-                entity.ToTable("MemberType");
-
-                entity.Property(e => e.Type).HasMaxLength(300);
-            });
 
             modelBuilder.Entity<Tournament>(entity =>
             {

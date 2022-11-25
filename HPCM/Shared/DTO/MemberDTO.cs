@@ -2,7 +2,7 @@
 
 public class MemberDTO
 {
-    public int MemberId { get; set; }
+    public string MemberId { get; set; }
     public string Name { get; set; } = null!;
     public string Nickname { get; set; } = null!;
     public string Email { get; set; } = null!;

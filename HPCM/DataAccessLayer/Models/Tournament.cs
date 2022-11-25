@@ -5,7 +5,7 @@ namespace DataAccessLayer.Models
     public partial class Tournament
     {
         public int TournamentId { get; set; }
-        public short Public { get; set; }
+        public bool Public { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Status { get; set; }

@@ -2,6 +2,9 @@
 using System.Security.Claims;
 using System.Text;
 using DataAccessLayer.AuthModels;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +20,13 @@ public class AuthController:ControllerBase
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IUserRepository _userRepository;
 
-    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserRepository userRepository)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _userRepository = userRepository;
     }
 
     [HttpPost]
@@ -62,7 +67,8 @@ public class AuthController:ControllerBase
         try
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
+            var userWithEmailExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null && userWithEmailExists !=null)
                 return StatusCode(StatusCodes.Status500InternalServerError, "User with this username already exists!");
 
             IdentityUser user = new()
@@ -75,7 +81,20 @@ public class AuthController:ControllerBase
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create user, please try again. " + result.Errors.ToJson());
 
-            return Ok("User created successfully.");
+            try
+            {
+                var createdUser = await _userManager.FindByNameAsync(model.Username);
+
+                await _userRepository.CreateMember(createdUser);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return Ok("User created successfully.|" + result.Succeeded );
         }
         catch (Exception e)
         {
@@ -83,7 +102,7 @@ public class AuthController:ControllerBase
         }
     }
 
-    private JwtSecurityToken GetToken(List<Claim> authClaims)
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
