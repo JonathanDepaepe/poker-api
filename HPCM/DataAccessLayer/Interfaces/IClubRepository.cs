@@ -8,7 +8,7 @@ namespace DataAccessLayer.Interfaces
         IQueryable<Club> GetClubs();
         IQueryable<Club> GetPublicClubs();
         IQueryable<Club> GetClubById(int clubId);
-        IQueryable<Club> GetClubByMemberId(int clubId);
+        List<Club> GetClubsByMemberId(string memberId);
         Task<Club?> CreateClub(ClubCreationDTO newClubDetails);
         Task<Club?> AlterClub(ClubCreationDTO newClubDetails);
         Task<Club?> DeleteClub(Club clubToBeDeleted);

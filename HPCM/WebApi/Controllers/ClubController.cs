@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using AutoMapper.Execution;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -18,10 +19,9 @@ public class ClubController : ControllerBase
     {
         _clubRepository = clubRepository;
     }
-
     [EnableCors("DefaultPolicy")]
-    [HttpGet (Name="GetClubs")]
-    public async Task<ActionResult<IEnumerable<Club>>> GetClubs(){
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Club>>> GetAllClubs(){
 
         return (_clubRepository.GetClubs() is IQueryable<Club> allClubs)
             ? Ok(await allClubs
@@ -30,25 +30,49 @@ public class ClubController : ControllerBase
     }
     
     [EnableCors("DefaultPolicy")]
-    [HttpGet("{id:int}",Name="GetClubById")]
-    public async Task<ActionResult<IEnumerable<Club>>> GetClub(int id){
+    [HttpGet("ClubId/{ClubId:int}",Name="GetClubById")]
+    public async Task<ActionResult<IEnumerable<Club>>> GetClubById(int ClubId){
 
-        return (_clubRepository.GetClubById(id) is IQueryable<Club> clubById)
+        return (_clubRepository.GetClubById(ClubId) is IQueryable<Club> clubById)
             ? Ok(await clubById
                 .ToListAsync())
-            : NotFound($"No club found with id {id}");
+            : NotFound($"No club found with id {ClubId}");
     }
 
-    [Authorize]
+
     [EnableCors("DefaultPolicy")]
-    [HttpPost (Name="CreateClub")]
+    [HttpGet("MemberId/{MemberId}")]
+    public async Task<ActionResult<IEnumerable<Club>>> GetClubByMemberId(string MemberId)
+    {
+
+        return (_clubRepository.GetClubsByMemberId(MemberId) is IQueryable<Club> clubsByMemberId)
+            ? Ok(await clubsByMemberId
+                .ToListAsync())
+            : NotFound($"No clubs found with {MemberId} as a participant");
+    }
+    [EnableCors("DefaultPolicy")]
+    [HttpGet("public/")]
+    public async Task<ActionResult<IEnumerable<Club>>> GetPublicClubs()
+    {
+        return (_clubRepository.GetPublicClubs() is IQueryable<Club> publicClubs)
+            ? Ok(await publicClubs
+                .ToListAsync())
+            : NotFound($"No public clubs found");
+    }
+
+
+
+
+    [EnableCors("DefaultPolicy")]
+    [HttpPost (Name="CreateClub"), Authorize]
     public async Task<ActionResult<Club>> CreateClub([FromBody]ClubCreationDTO newClub)
     {
         return (await _clubRepository.CreateClub(newClub) is Club createdClub)
             ? Created(Url.Link("CreateClub", new { id = createdClub?.ClubId }) ?? throw new InvalidOperationException(), createdClub)
             : BadRequest();
     }
-    
+
+    [Authorize]
     [EnableCors("DefaultPolicy")]
     [HttpPost("/api/League",Name = "CreateLeague")]
     

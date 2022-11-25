@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
@@ -153,6 +154,52 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Error retrieving clubs from db| ",e);
             }
         }
+        public IQueryable<Club> GetPublicClubs()
+        {
+            try
+            {
+                return _db.Clubs
+                    .Include(c => c.Owner)
+                    .Include(c => c.Announcements)
+                    .Include(c => c.Leagues)
+                    .Select(b => new Club
+                    {
+                        ClubId = b.ClubId,
+                        OwnerId = b.OwnerId,
+                        Name = b.Name,
+                        PictureUrl = b.PictureUrl,
+                        Public = b.Public,
+                        CreationDateTime = b.CreationDateTime,
+                        Owner = b.Owner
+                    })
+                    .Where(c=>c.Public==true);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error retrieving clubs from db| ", e);
+            }
+        }
+
+        public List<Club> GetClubsByMemberId(string memberId)
+        {
+            try
+            {
+                List<int> memberClubParticipations = _db.ClubMembers.Where(d => d.MemberId == memberId).Select(b=>b.ClubId).ToList();
+                List<Club>? foundClubs = null;
+
+                foreach (int item in memberClubParticipations)
+                {
+                    foundClubs.Add(GetClubById(item).OrderBy(e=>e.ClubId).First());
+                }
+
+                return foundClubs;
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Unable to query clubs by MemberId| " + e.ToString());
+            }
+        }
 
         public IQueryable<Club> GetClubById(int clubId)
         {
@@ -259,14 +306,6 @@ namespace DataAccessLayer.Repositories
             return sBuilder.ToString();
         }
 
-        public IQueryable<Club> GetPublicClubs()
-        {
-            throw new NotImplementedException();
-        }
 
-        public IQueryable<Club> GetClubByMemberId(int clubId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
