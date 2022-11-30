@@ -91,5 +91,20 @@ namespace DataAccessLayer.Repositories
         {
             return await _db.SaveChangesAsync() > 0;
         }
+
+        public Task<Invitation?> CreateLeagueInvitation(string memberId, int leagueId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClubMember?> JoinClub(string memberId, int clubId, ClubRoles role)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
