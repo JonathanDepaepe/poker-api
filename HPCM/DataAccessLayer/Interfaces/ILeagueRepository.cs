@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Models;
+using Shared.DTO;
 
 
 namespace DataAccessLayer.Interfaces
@@ -8,5 +9,7 @@ namespace DataAccessLayer.Interfaces
         IQueryable<League> GetLeagues();
         IQueryable<League> GetLeaguesById(int leagueId);
         IQueryable<League> GetLeaguesByClubId(int clubId);
+        Task<League?> CreateClubLeague(LeagueCreationDTO newLeagueDetails);
+        
     }
 }

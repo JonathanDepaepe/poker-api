@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -62,6 +63,33 @@ namespace DataAccessLayer.Repositories
             {
                 throw new Exception("Unable to retrieve Leagues by ClubId | " + e);
             }
+        }
+
+        public async Task<League?> CreateClubLeague(LeagueCreationDTO newLeagueDetails)
+        {
+            try
+            {
+                League league = new()
+                {
+                    ClubId = newLeagueDetails.ClubId,
+                    Name = newLeagueDetails.Name,
+                    Public = newLeagueDetails.Public,
+                    Description = newLeagueDetails.Description
+                };
+                await _db.Leagues.AddAsync(league);
+                await SaveAsync();
+                League test = _db.Leagues.OrderBy(b => b.LeagueId).Last();
+                return test;
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Creating new League FAILED, check input Params| ", e.ToString());
+            }
+        }
+
+        private async Task<bool> SaveAsync()
+        {
+            return await _db.SaveChangesAsync() > 0;
         }
     }
 }

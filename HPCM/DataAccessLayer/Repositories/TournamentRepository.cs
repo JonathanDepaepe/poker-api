@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DAL.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 
 namespace DataAccessLayer.Repositories
 {
@@ -75,13 +76,33 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public bool DeleteTournament(int tournamentId)
+        public bool DeleteTournament(int tournamentId, string memberId)
         {
             try
             {
-                _db.Tournaments.Remove(_db.Tournaments.Find(tournamentId));
-                _db.SaveChanges();
-                return true;
+                IQueryable<TournamentLink> tournamentConnection = _db.TournamentLinks.Where(b => b.TournamentId == tournamentId);
+                IQueryable<ClubMember> clubMembers = _db.ClubMembers.Where(b => b.ClubId == tournamentConnection.FirstOrDefault().ClubId);
+                foreach (var member in clubMembers)
+                {
+                    if (member.MemberId == memberId)
+                    {
+                        if (member.Role == ClubRoles.ModeratorRole || member.Role == ClubRoles.AdminRole)
+                        {
+                            _db.Tournaments.Remove(_db.Tournaments.Find(tournamentId));
+                            _db.SaveChanges();
+                            return true;
+                        }
+                        else
+                        {
+                            throw new InvalidPermissionsException("Unable to delete Tournament, wrong permissions!");
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidPermissionsException("Unable to delete Tournament, given member not found in Club!");
+                    }
+                }
+                return false;
             }
             catch (Exception e)
             {
@@ -101,9 +122,25 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public IQueryable<Member> GetTournamentPlayers(int tournamentId)
+        public List<IQueryable<Member>> GetTournamentPlayers(int tournamentId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var retrievedMembersIds = _db.TournamentEntries.Where(s => s.TournamentId == tournamentId);
+
+                List<IQueryable<Member>> joinedMembers= new List<IQueryable<Member>>();
+                
+                foreach (var item in retrievedMembersIds)
+                {
+                    joinedMembers.Add( _db.Members.Where(s => s.MemberId == item.MemberId));
+                }
+
+                return joinedMembers;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve tournament players| " + e);
+            }
         }
 
         public IQueryable<Tournament> GetTournaments()

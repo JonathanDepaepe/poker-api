@@ -18,9 +18,24 @@ namespace DataAccessLayer.Repositories
             _db = db;
         }
 
-        public Task<Club?> AlterClub(ClubCreationDTO newClubDetails)
+        public IQueryable<Club?> AlterClub(ClubCreationDTO newClubDetails, int clubId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var club = _db.Clubs.FirstOrDefault(item => item.ClubId == clubId); ;
+                club.Public = newClubDetails.Public;
+                club.Name = newClubDetails.Name;
+                club.PictureUrl = newClubDetails.PictureUrl;
+                club.Public = newClubDetails.Public;
+
+                _db.Clubs.Update(club);
+                _db.SaveChanges();
+                return GetClubs().Where(s => s.ClubId == clubId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("unable to alter Tournament details| ", e);
+            }
         }
 
         public async Task<Club?> CreateClub(ClubCreationDTO newClubDetails)
@@ -49,39 +64,28 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<League?> CreateClubLeague(LeagueCreationDTO newLeagueDetails)
+        public async Task<bool?> DeleteClub(int clubId, string memberId)
         {
             try
             {
-                League league = new()
+                Club? clubToDelete = await GetClubByIdAsync(clubId);
+                if (clubToDelete is not null)
                 {
-                    ClubId = newLeagueDetails.ClubId,
-                    Name = newLeagueDetails.Name,
-                    Public = newLeagueDetails.Public,
-                    Description = newLeagueDetails.Description
-                };
-                await _db.Leagues.AddAsync(league);
-                await SaveAsync();
-                League test = _db.Leagues.OrderBy(b=>b.LeagueId).Last();
-                return test;
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException("Creating new League FAILED, check input Params| ",e.ToString());
-            }
-        }
-
-        
-
-        public async Task<Club?> DeleteClub(Club clubToBeDeleted)
-        {
-            try
-            {
-                Club? clubToDelete = await GetClubByIdAsync(clubToBeDeleted.ClubId);
-                if (clubToDelete is null) throw new ArgumentException("Unable to find Specified club");
-                _db.Clubs.Remove(clubToDelete);
-                await SaveAsync();
-                return clubToDelete;
+                    if (clubToDelete.OwnerId == memberId)
+                    {
+                        _db.Clubs.Remove(clubToDelete);
+                        await SaveAsync();
+                        return true;
+                    }
+                    else
+                    {
+                        throw new InvalidPermissionsException("Invalid permissions to delete club!");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Unable to find Specified club");
+                }
             }
             catch (Exception e)
             {
@@ -105,7 +109,22 @@ namespace DataAccessLayer.Repositories
                         PictureUrl = b.PictureUrl,
                         Public = b.Public,
                         CreationDateTime = b.CreationDateTime,
-                        Owner = b.Owner
+                        Owner = b.Owner,
+                        Leagues = (ICollection<League>)b.Leagues.Select(b=>new League
+                        {
+                            LeagueId = b.LeagueId,
+                            Name= b.Name,
+                            Public= b.Public,
+                            Description= b.Description
+                        }),
+                        Announcements = (ICollection<Announcement>)b.Announcements.Select(b=>new Announcement
+                        {
+                            PostId= b.PostId,
+                            CreatorId= b.CreatorId,
+                            Title= b.Title,
+                            Description= b.Description,
+                            CreationDateTime= b.CreationDateTime
+                        })
                     });
             }
             catch (Exception e)
@@ -113,25 +132,12 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Error retrieving clubs from db| ",e);
             }
         }
+
         public IQueryable<Club> GetPublicClubs()
         {
             try
             {
-                return _db.Clubs
-                    .Include(c => c.Owner)
-                    .Include(c => c.Announcements)
-                    .Include(c => c.Leagues)
-                    .Select(b => new Club
-                    {
-                        ClubId = b.ClubId,
-                        OwnerId = b.OwnerId,
-                        Name = b.Name,
-                        PictureUrl = b.PictureUrl,
-                        Public = b.Public,
-                        CreationDateTime = b.CreationDateTime,
-                        Owner = b.Owner
-                    })
-                    .Where(c=>c.Public==true);
+                return GetClubs().Where(c => c.Public == true); 
             }
             catch (Exception e)
             {
@@ -218,6 +224,9 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
+
+
+                //check if member already in club
                 Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
                 var memberExists = _db.ClubMembers.Where(c => c.ClubId == invitationAttempt.ClubId && c.MemberId == memberId);
                 if (memberExists != null)
@@ -225,7 +234,7 @@ namespace DataAccessLayer.Repositories
                     throw new Exception($"{memberId} already exists in the player base of the club.");
                 }
                     
-
+                //add new member to club
                 if (invitationAttempt.MemberId == memberId)
                 {
                     ClubMember createdMember = await JoinClub(invitationAttempt.MemberId, invitationAttempt.ClubId,invitationAttempt.Role);
@@ -240,6 +249,7 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Unable to join club| ",e);
             }
         }
+
         private async Task<bool> SaveAsync()
         {
             return await _db.SaveChangesAsync() > 0;
@@ -277,7 +287,7 @@ namespace DataAccessLayer.Repositories
                     MemberId = memberId,
                     Role = role
                 };
-                IQueryable<ClubMember> currentClubMembers = RetrieveClubMembers(clubId);
+                IQueryable<ClubMember> currentClubMembers = RetrieveClubMembersConnection(clubId);
                 if (currentClubMembers.Any(o=>o.ClubId==newClubMember.ClubId&&o.MemberId==newClubMember.MemberId)) 
                 {
                     throw new Exception($"{memberId} already exists in the player base of the club.");
@@ -289,15 +299,36 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception e)
             {
-                throw new ArgumentException("Creating new club FAILED, check input Params", e.ToString());
+                throw new ArgumentException("Joining new club FAILED, check input Params", e.ToString());
             }
         }
 
-        public IQueryable<ClubMember?> RetrieveClubMembers(int clubId)
+        public IQueryable<ClubMember?> RetrieveClubMembersConnection(int clubId)
         {
             try
             {
                 return _db.ClubMembers.Where(c => c.ClubId == clubId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve all club members| " + e);
+            }
+        }
+
+        public List<IQueryable<Member?>> RetrieveClubMembers(int clubId)
+        {
+            try
+            {
+                var retrievedMembersIds = RetrieveClubMembersConnection(clubId);
+
+                List<IQueryable<Member?>> joinedMembers = new List<IQueryable<Member?>>();
+
+                foreach (var item in retrievedMembersIds)
+                {
+                    joinedMembers.Add(_db.Members.Where(s => s.MemberId == item.MemberId));
+                }
+
+                return joinedMembers;
             }
             catch (Exception e)
             {

@@ -10,13 +10,12 @@ namespace DataAccessLayer.Interfaces
         IQueryable<Club> GetClubById(int clubId);
         List<Club> GetClubsByMemberId(string memberId);
         Task<Club?> CreateClub(ClubCreationDTO newClubDetails);
-        Task<Club?> AlterClub(ClubCreationDTO newClubDetails);
-        Task<Club?> DeleteClub(Club clubToBeDeleted);
-        Task<League?> CreateClubLeague(LeagueCreationDTO newLeagueDetails);
+        IQueryable<Club?> AlterClub(ClubCreationDTO newClubDetails, int clubId);
+        Task<bool?> DeleteClub(int clubId, string memberId);
         Task<Invitation?> CreateInvitation(string memberId,int clubId,ClubRoles role);
         Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash);
         Task<ClubMember?> JoinClub(string memberId, int clubId,ClubRoles role);
-        IQueryable<ClubMember?> RetrieveClubMembers(int clubId);
-
+        IQueryable<ClubMember?> RetrieveClubMembersConnection(int clubId);
+        List<IQueryable<Member?>> RetrieveClubMembers(int clubId);
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataAccessLayer.Models;
 
-namespace DAL.Interfaces
+namespace DataAccessLayer.Interfaces
 {
     public interface ITournamentRepository
     {
@@ -13,12 +13,12 @@ namespace DAL.Interfaces
         IQueryable<Tournament> GetTournamentById(int tournamentId);
         List<Tournament> GetTournamentsByClub(int clubId);
         Tournament CreateTournament(Tournament tournamentDetails, int clubId, int leagueId);
-        bool DeleteTournament(int tournamentId);
+        bool DeleteTournament(int tournamentId,string memberId);
         IQueryable<Tournament> AlterTournament(Tournament newTournamentDetails);
         TournamentReservation JoinTournamentUsingReservation(int tournamentId, string memberId);
         TournamentEntry JoinTournamentAfterStart(int tournamentId,string memberId);
         void StartTournament(int tournamentId);
-        IQueryable<Member> GetTournamentPlayers(int tournamentId);
+        List<IQueryable<Member>> GetTournamentPlayers(int tournamentId);
 
     }
 }
