@@ -4,6 +4,7 @@ using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(HpcmContext))]
-    partial class HpcmContextModelSnapshot : ModelSnapshot
+    [Migration("20221130164822_creationOfLeagueMember")]
+    partial class creationOfLeagueMember
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,31 +177,6 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex(new[] { "ClubId" }, "ClubLeagueRelation");
 
                     b.ToTable("Leagues");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.LeagueInvitation", b =>
-                {
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)");
-
-                    b.Property<string>("InvitationHash")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("LeagueId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MemberId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex(new[] { "LeagueId" }, "LeagueRelation");
-
-                    b.HasIndex(new[] { "MemberId" }, "UserRelation");
-
-                    b.ToTable("LeagueInvitation", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.LeagueMember", b =>
@@ -631,25 +608,6 @@ namespace DataAccessLayer.Migrations
                         .HasConstraintName("ClubLeagueRelation");
 
                     b.Navigation("Club");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.LeagueInvitation", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.League", "League")
-                        .WithMany()
-                        .HasForeignKey("LeagueId")
-                        .IsRequired()
-                        .HasConstraintName("LeagueInvitationRelation");
-
-                    b.HasOne("DataAccessLayer.Models.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .IsRequired()
-                        .HasConstraintName("UserInvitationRelation");
-
-                    b.Navigation("League");
-
-                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.LeagueMember", b =>

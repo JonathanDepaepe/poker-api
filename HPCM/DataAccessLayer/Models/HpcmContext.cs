@@ -139,7 +139,35 @@ namespace DataAccessLayer.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("UserRelation");
             });
-            
+
+            modelBuilder.Entity<LeagueInvitation>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("LeagueInvitation");
+
+                entity.HasIndex(e => e.LeagueId, "LeagueRelation");
+
+                entity.HasIndex(e => e.MemberId, "UserRelation");
+
+                entity.Property(e => e.ExpirationDate).HasPrecision(0);
+
+                entity.Property(e => e.InvitationHash).HasMaxLength(500);
+                
+
+                entity.HasOne(d => d.League)
+                    .WithMany()
+                    .HasForeignKey(d => d.LeagueId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("LeagueInvitationRelation");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany()
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UserInvitationRelation");
+            });
+
             modelBuilder.Entity<League>(entity =>
             {
 
@@ -154,6 +182,28 @@ namespace DataAccessLayer.Models
                     .HasForeignKey(d => d.ClubId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ClubLeagueRelation");
+            });
+
+            modelBuilder.Entity<LeagueMember>(entity =>
+            {
+                entity.HasKey(e => new { e.LeagueId, e.MemberId})
+                    .HasName("LeagueMembers_PK");
+
+                entity.HasIndex(e => e.LeagueId, "LeagueRelation");
+
+                entity.HasIndex(e => e.MemberId, "LeagueMembersRelation");
+
+                entity.HasOne(d => d.League)
+                    .WithMany()
+                    .HasForeignKey(d => d.LeagueId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("LeagueRelation");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany()
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("LeagueMembersRelation");
             });
 
             modelBuilder.Entity<Member>(entity =>
