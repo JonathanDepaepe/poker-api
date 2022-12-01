@@ -1,7 +1,10 @@
-﻿using DataAccessLayer.Interfaces;
+﻿using DataAccessLayer.Exceptions;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO;
+using StackExchange.Redis;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -92,19 +95,121 @@ namespace DataAccessLayer.Repositories
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public Task<Invitation?> CreateLeagueInvitation(string memberId, int leagueId)
+        public async Task<LeagueInvitation?> CreateLeagueInvitation(string memberId, int leagueId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //idea, create defined invite hash for club so multiple members can join. Deletable in club management
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+
+                    LeagueInvitation inv = new LeagueInvitation()
+                    {
+                        MemberId = memberId,
+                        LeagueId = leagueId,
+                        ExpirationDate = DateTime.UtcNow.AddDays(7),
+                        InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
+                        
+                    };
+
+                    await _db.LeagueInvitations.AddAsync(inv);
+                    await SaveAsync();
+                    return inv;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to create Invitation| ", e);
+            }
         }
 
-        public Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash)
+        public async Task<LeagueMember?> JoinLeagueWithInvitation(string memberId, string hash)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+
+                //check if member already in League
+                LeagueInvitation invitationAttempt = _db.LeagueInvitations.Where(s => s.InvitationHash == hash).First();
+                var memberExists = _db.LeagueMembers.Where(c => c.LeagueId == invitationAttempt.LeagueId && c.MemberId == memberId);
+                if (memberExists != null)
+                {
+                    throw new Exception($"{memberId} already exists in the player base of the club.");
+                }
+
+                //add new member to League
+                if (invitationAttempt.MemberId == memberId)
+                {
+                    LeagueMember? createdMember = await JoinLeague(invitationAttempt.MemberId, invitationAttempt.LeagueId);
+                    _db.LeagueInvitations.Remove(invitationAttempt);
+                    await _db.SaveChangesAsync();
+                    return createdMember;
+                }
+                throw new InvalidInvitationException("Error using invite, wrong member Id");
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to join club| ", e);
+            }
         }
 
-        public Task<ClubMember?> JoinClub(string memberId, int clubId, ClubRoles role)
+        public async Task<LeagueMember?> JoinLeague(string memberId, int leagueId)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                LeagueMember newLeagueMember = new()
+                {
+                    LeagueId = leagueId,
+                    MemberId = memberId
+                };
+                IQueryable<LeagueMember> currentLeagueMembers = RetrieveLeagueMembersConnection(leagueId);
+                if (currentLeagueMembers.Any(o => o.LeagueId == newLeagueMember.LeagueId && o.MemberId == newLeagueMember.MemberId))
+                {
+                    throw new Exception($"{memberId} already exists in the player base of the club.");
+                }
+
+                await _db.LeagueMembers.AddAsync(newLeagueMember);
+                await SaveAsync();
+                return _db.LeagueMembers.Where(s=>s.MemberId==memberId).OrderBy(b => b.MemberId).Last();
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Joining new club FAILED, check input Params", e.ToString());
+            }
+        }
+
+        public IQueryable<LeagueMember?> RetrieveLeagueMembersConnection(int leagueId)
+        {
+            try
+            {
+                return _db.LeagueMembers.Where(c => c.LeagueId == leagueId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve all league members| " + e);
+            }
+        }
+
+        private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+        {
+
+            // Convert the input string to a byte array and compute the hash.
+            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Create a new Stringbuilder to collect the bytes
+            // and create a string.
+            var sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data
+            // and format each one as a hexadecimal string.
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            // Return the hexadecimal string.
+            return sBuilder.ToString();
         }
     }
 }

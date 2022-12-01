@@ -276,7 +276,7 @@ namespace DataAccessLayer.Repositories
             return sBuilder.ToString();
         }
 
-        public async Task<ClubMember> JoinClub(string memberId, int clubId,ClubRoles role)
+        public async Task<ClubMember?> JoinClub(string memberId, int clubId,ClubRoles role)
         {
             try
             {
@@ -295,7 +295,7 @@ namespace DataAccessLayer.Repositories
                 
                 await _db.ClubMembers.AddAsync(newClubMember);
                 await SaveAsync();
-                return _db.ClubMembers.OrderBy(b => b.MemberId).Last();
+                return _db.ClubMembers.Where(s=>s.MemberId==memberId).OrderBy(b => b.MemberId).Last();
             }
             catch (Exception e)
             {

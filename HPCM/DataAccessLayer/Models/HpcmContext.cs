@@ -22,6 +22,8 @@ namespace DataAccessLayer.Models
         public virtual DbSet<ClubMember> ClubMembers { get; set; } = null!;
         public virtual DbSet<Invitation> Invitations { get; set; } = null!;
         public virtual DbSet<League> Leagues { get; set; } = null!;
+        public virtual DbSet<LeagueMember> LeagueMembers { get; set; } = null!;
+        public virtual DbSet<LeagueInvitation> LeagueInvitations { get; set; } = null!;
         public virtual DbSet<Member> Members { get; set; } = null!;
         public virtual DbSet<Tournament> Tournaments { get; set; } = null!;
         public virtual DbSet<TournamentEntry> TournamentEntries { get; set; } = null!;
