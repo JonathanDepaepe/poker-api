@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Shared.DTO;
+using StackExchange.Redis;
 
 namespace WebApi.Controllers;
 
@@ -78,6 +80,15 @@ public class ClubController : ControllerBase
     {
         return (bool)await _clubRepository.DeleteClub(ClubId, memberID);
     }
+
+    /*[EnableCors("DefaultPolicy")]
+    [HttpPost(Name = "CreateClubInvite"), Authorize]
+    public async Task<ActionResult<Club>> CreateClubInvite([FromBody]string creatorId, Invitation invite)
+    {
+        return (await _clubRepository.CreateInvitation(creatorId,invite.MemberId, invite.ClubId, invite.Role) is Invitation createdInvitation)
+            ? Created(Url.Link("CreateClubInvitation", new { id = createdInvitation?.ClubId }) ?? throw new InvalidOperationException(), createdInvitation)
+            : BadRequest();
+    }*/
 
 
 

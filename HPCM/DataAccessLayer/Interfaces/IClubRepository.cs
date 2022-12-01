@@ -12,7 +12,7 @@ namespace DataAccessLayer.Interfaces
         Task<Club?> CreateClub(ClubCreationDTO newClubDetails);
         IQueryable<Club?> AlterClub(ClubCreationDTO newClubDetails, int clubId);
         Task<bool?> DeleteClub(int clubId, string memberId);
-        Task<Invitation?> CreateInvitation(string memberId,int clubId,ClubRoles role);
+        Task<Invitation?> CreateInvitation(string creatorId,string memberId,int clubId,string role,int durationInDays);
         Task<ClubMember?> JoinClubWithInvitation(string memberId, string hash);
         Task<ClubMember?> JoinClub(string memberId, int clubId,ClubRoles role);
         IQueryable<ClubMember?> RetrieveClubMembersConnection(int clubId);

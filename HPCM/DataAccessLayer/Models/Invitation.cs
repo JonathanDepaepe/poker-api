@@ -6,6 +6,7 @@ namespace DataAccessLayer.Models
     {
         public string MemberId { get; set; }
         public int ClubId { get; set; }
+        public string CreatorId { get; set; } = null!;
         public DateTime ExpirationDate { get; set; }
         public string InvitationHash { get; set; } = null!;
         public ClubRoles Role { get; set; }

@@ -192,26 +192,34 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<Invitation?> CreateInvitation(string memberId,int clubId,ClubRoles role)
+        public async Task<Invitation?> CreateInvitation(string creatorId,string memberId,int clubId,string role,int durationInDays)
         {
             try
-            {
+            {   //Method first checks if the creator has the correct permissions in the club, then it will create a new invite
                 //idea, create defined invite hash for club so multiple members can join. Deletable in club management
-                using (SHA256 sha256Hash = SHA256.Create())
+                if (CheckPermissions(creatorId, clubId, ClubRoles.ModeratorRole.ToString()) || CheckPermissions(creatorId, clubId, ClubRoles.AdminRole.ToString()))
                 {
-                    
-                    Invitation inv = new Invitation()
+                    ClubRoles definedRole = (ClubRoles) Enum.Parse(typeof(ClubRoles), role);
+                    using (SHA256 sha256Hash = SHA256.Create())
                     {
-                        MemberId = memberId,
-                        ClubId = clubId,
-                        ExpirationDate = DateTime.UtcNow.AddDays(7),
-                        InvitationHash = GetHash(sha256Hash,(memberId.ToString() +DateTime.UtcNow.AddDays(7))),
-                        Role = role
-                    };
-                    
-                    await _db.Invitations.AddAsync(inv);
-                    await SaveAsync();
-                    return inv;
+                        Invitation inv = new()
+                        {
+                            MemberId = memberId,
+                            ClubId = clubId,
+                            CreatorId= creatorId,
+                            ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
+                            InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
+                            Role = definedRole
+                        };
+
+                        await _db.Invitations.AddAsync(inv);
+                        await SaveAsync();
+                        return inv;
+                    }
+                }
+                else
+                {
+                    throw new InvalidInvitationException("Invalid permissions to create invitation!");
                 }
             }
             catch (Exception e)
@@ -224,8 +232,6 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-
-
                 //check if member already in club
                 Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
                 var memberExists = _db.ClubMembers.Where(c => c.ClubId == invitationAttempt.ClubId && c.MemberId == memberId);
@@ -233,7 +239,10 @@ namespace DataAccessLayer.Repositories
                 {
                     throw new Exception($"{memberId} already exists in the player base of the club.");
                 }
-                    
+                if (invitationAttempt.ExpirationDate < DateTime.UtcNow)
+                {
+                    throw new Exception("The invitation has expired!");
+                }   
                 //add new member to club
                 if (invitationAttempt.MemberId == memberId)
                 {
@@ -333,6 +342,30 @@ namespace DataAccessLayer.Repositories
             catch (Exception e)
             {
                 throw new Exception("Unable to retrieve all club members| " + e);
+            }
+        }
+
+        private bool CheckPermissions(string memberId,int clubId,string role)
+        {
+            //will check if the given member has the correct permissions to execute a specific method/task
+            try
+            {
+                IQueryable<ClubMember?> foundMember = RetrieveClubMembersConnection(clubId).Where(c => c.MemberId == memberId);
+                if (foundMember.Any())
+                {
+                    ClubRoles foundRole = foundMember.SingleOrDefault().Role;
+                    if (foundRole.ToString()==role)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Unable to check permission for member| " +e);
             }
         }
     }

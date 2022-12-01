@@ -123,9 +123,8 @@ namespace DataAccessLayer.Models
                 entity.HasIndex(e => e.ClubId, "ClubRelation");
 
                 entity.HasIndex(e => e.MemberId, "UserRelation");
-
+                entity.Property(e => e.CreatorId).HasMaxLength(255);
                 entity.Property(e => e.ExpirationDate).HasPrecision(0);
-
                 entity.Property(e => e.InvitationHash).HasMaxLength(500);
                 entity.Property(e => e.Role).HasMaxLength(500);
 
