@@ -153,7 +153,7 @@ namespace DataAccessLayer.Repositories
                     return new Response()
                     {
                         Status = "Failed",
-                        Message = "Failed to create new user |" + result.Errors.ToString()
+                        Message = "Failed to create new user |" + result.Errors
                     };
                 }
 
@@ -253,7 +253,7 @@ namespace DataAccessLayer.Repositories
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"])),
                 ValidateLifetime = false
             };
 
