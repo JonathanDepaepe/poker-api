@@ -2,7 +2,7 @@
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace DataAccessLayer.Repositories
 {
@@ -39,9 +39,9 @@ namespace DataAccessLayer.Repositories
             }        
         }
 
-        public IQueryable<Member> GetMemberById()
+        public IQueryable<Member> GetMemberById(string memberId)
         {
-            throw new NotImplementedException();
+            return _db.Members.Where(c => c.MemberId == memberId);
         }
 
 

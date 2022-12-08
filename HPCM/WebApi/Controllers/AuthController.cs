@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Common;
 using NuGet.Protocol;
 
 namespace WebApi.Controllers;
@@ -18,49 +19,42 @@ namespace WebApi.Controllers;
 [ApiController]
 public class AuthController:ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IAuthRepository _authRepository;
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _userRepository;
 
-    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserRepository userRepository)
+    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserRepository userRepository, IAuthRepository authRepository)
     {
         _userManager = userManager;
         _configuration = configuration;
         _userRepository = userRepository;
+        _authRepository = authRepository;
+        
     }
 
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        try
         {
-            var userRoles = await _userManager.GetRolesAsync(user);
+            Response res = await _authRepository.Login(model);
 
-            var userId = await _userManager.GetUserIdAsync(user);
-
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            foreach (var userRole in userRoles)
+            if (res.Status == "Completed")
             {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                return Ok(res);
             }
-
-            var token = GetToken(authClaims);
-
-            return Ok(new
+            else
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo,
-                memberId=userId
-            });
+                return Unauthorized();
+            }
         }
-        return Unauthorized();
+        catch (Exception e)
+        {
+
+            throw new Exception("Failed to login| " + e);
+        }
     }
 
     [HttpPost]
@@ -69,55 +63,66 @@ public class AuthController:ControllerBase
     {
         try
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            var userWithEmailExists = await _userManager.FindByEmailAsync(model.Email);
-            if (userExists != null && userWithEmailExists !=null)
+            Response res = await _authRepository.Register(model);
+
+            if (res.Status == "Completed")
+            {
+                return Ok(res);
+            }
+            else if (res.Status == "Unauthorized")
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, "User with this username already exists!");
-
-            IdentityUser user = new()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create user, please try again. " + result.Errors.ToJson());
-
-            try
-            {
-                var createdUser = await _userManager.FindByNameAsync(model.Username);
-
-                await _userRepository.CreateMember(createdUser);
             }
-            catch (Exception)
+            else if(res.Status=="Failed")
             {
-
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, res.Message);
             }
-
-
-            return Ok("User created successfully.|" + result.Succeeded );
+            else
+            {
+                return BadRequest(res);
+            }
         }
         catch (Exception e)
         {
-            throw new Exception("creating new user failed| " + e);
+
+            throw new Exception("Failed to register| " + e);
         }
     }
 
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
+    [HttpPost]
+    [Route("refresh-token")]
+    public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            _configuration["Jwt:Issuer"],
-            _configuration["Jwt:Audience"],
-            authClaims,
-            expires: DateTime.UtcNow.AddMinutes(10),
-            signingCredentials: signIn);
+        try
+        {
+            if (tokenModel is null)
+            {
+                return BadRequest("Invalid client request");
+            }
 
-        return token;
+            Response res = await _authRepository.UseRefreshToken(tokenModel);
+
+            if (res.Status=="Completed")
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return Unauthorized(res);
+            }
+        
+        }
+
+
+        catch (Exception e)
+        {
+
+            throw new Exception("Unable to create new access tokens| " + e);
+        }
     }
+
+
+
 }
 
-    
+

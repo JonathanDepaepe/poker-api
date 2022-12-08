@@ -11,7 +11,7 @@ namespace DataAccessLayer.Interfaces
 {
     public interface IUserRepository
     {
-        IQueryable<Member> GetMemberById();
+        IQueryable<Member> GetMemberById(string memberId);
 
         Task<Member> CreateMember(IdentityUser newMemberDetails);
 

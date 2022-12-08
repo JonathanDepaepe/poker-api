@@ -6,7 +6,7 @@ using Shared.DTO;
 
 namespace DataAccessLayer.Models
 {
-    public partial class HpcmContext : IdentityDbContext<IdentityUser>
+    public partial class HpcmContext : IdentityDbContext<ApplicationUser>
     {
         public HpcmContext()
         {
