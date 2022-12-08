@@ -38,6 +38,8 @@ public class AuthController:ControllerBase
         {
             var userRoles = await _userManager.GetRolesAsync(user);
 
+            var userId = await _userManager.GetUserIdAsync(user);
+
             var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
@@ -54,7 +56,8 @@ public class AuthController:ControllerBase
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
+                expiration = token.ValidTo,
+                memberId=userId
             });
         }
         return Unauthorized();

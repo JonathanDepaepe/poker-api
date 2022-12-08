@@ -81,14 +81,14 @@ public class ClubController : ControllerBase
         return (bool)await _clubRepository.DeleteClub(ClubId, memberID);
     }
 
-    /*[EnableCors("DefaultPolicy")]
-    [HttpPost(Name = "CreateClubInvite"), Authorize]
-    public async Task<ActionResult<Club>> CreateClubInvite([FromBody]string creatorId, Invitation invite)
+    [EnableCors("DefaultPolicy")]
+    [HttpPost("CreateClubInvite",Name = "CreateClubInvite"), Authorize]
+    public async Task<ActionResult<Invitation>> CreateClubInvite([FromBody]ClubInviteDTO invite)
     {
-        return (await _clubRepository.CreateInvitation(creatorId,invite.MemberId, invite.ClubId, invite.Role) is Invitation createdInvitation)
+        return (await _clubRepository.CreateInvitation(invite.creatorId, invite.memberId, invite.clubId, invite.role,invite.duration) is Invitation createdInvitation)
             ? Created(Url.Link("CreateClubInvitation", new { id = createdInvitation?.ClubId }) ?? throw new InvalidOperationException(), createdInvitation)
             : BadRequest();
-    }*/
+    }
 
 
 
