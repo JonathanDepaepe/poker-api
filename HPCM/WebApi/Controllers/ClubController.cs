@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shared.DTO;
 using StackExchange.Redis;
+using Member = DataAccessLayer.Models.Member;
 
 namespace WebApi.Controllers;
 
@@ -39,6 +40,17 @@ public class ClubController : ControllerBase
             ? Ok(await clubById
                 .ToListAsync())
             : NotFound($"No club found with id {ClubId}");
+    }
+
+    [EnableCors("DefaultPolicy")]
+    [HttpGet("ClubId/{ClubId:int}/members", Name = "GetClubMembers")]
+    public async Task<ActionResult<IEnumerable<Member>>> GetClubMembers(int ClubId)
+    {
+        //todo fix this
+        return (_clubRepository.RetrieveClubMembers(ClubId) is IQueryable<Member> MembersByClub)
+            ? Ok(await MembersByClub
+                .ToListAsync())
+            : NotFound($"No members found in club: {ClubId}");
     }
 
 

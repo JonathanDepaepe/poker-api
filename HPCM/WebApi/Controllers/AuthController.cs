@@ -33,6 +33,7 @@ public class AuthController:ControllerBase
         
     }
 
+    [EnableCors("DefaultPolicy")]
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -57,6 +58,7 @@ public class AuthController:ControllerBase
         }
     }
 
+    [EnableCors("DefaultPolicy")]
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -89,6 +91,7 @@ public class AuthController:ControllerBase
         }
     }
 
+    [EnableCors("DefaultPolicy")]
     [HttpPost]
     [Route("refresh-token")]
     public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
