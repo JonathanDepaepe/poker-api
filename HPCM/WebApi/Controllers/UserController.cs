@@ -22,7 +22,7 @@ public class UserController : ControllerBase
 
 
     [EnableCors("DefaultPolicy")]
-    [HttpGet("{MemberId}", Name = "GetMemberById")]
+    [HttpGet("{MemberId}", Name = "GetMemberById"), Authorize]
     public async Task<ActionResult<IEnumerable<Member>>> GetMemberById(string MemberId)
     {
 

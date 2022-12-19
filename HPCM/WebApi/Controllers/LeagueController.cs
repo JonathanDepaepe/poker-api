@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         }
 
         [EnableCors("DefaultPolicy")]
-        [HttpGet("/api/League/{id:int}", Name = "GetLeagueById")]
+        [HttpGet("/api/League/{id:int}", Name = "GetLeagueById"),Authorize]
         public async Task<ActionResult<IEnumerable<League>>> GetLeagueById(int id)
         {
 
@@ -33,7 +33,7 @@ namespace WebApi.Controllers
         }
 
         [EnableCors("DefaultPolicy")]
-        [HttpGet("/api/League", Name = "GetLeagues")]
+        [HttpGet("/api/League", Name = "GetLeagues"),Authorize]
         public async Task<ActionResult<IEnumerable<Club>>> GetLeagues()
         {
 
@@ -44,7 +44,7 @@ namespace WebApi.Controllers
         }
 
         [EnableCors("DefaultPolicy")]
-        [HttpGet("/api/League/Club={clubId:int}", Name = "GetLeagueByClubId")]
+        [HttpGet("/api/League/Club={clubId:int}", Name = "GetLeagueByClubId"), Authorize]
         public async Task<ActionResult<IEnumerable<League>>> GetLeagueByClubId(int clubId)
         {
             return (_leagueRepository.GetLeaguesByClubId(clubId) is IQueryable<League> leagueByClubId)
@@ -55,7 +55,7 @@ namespace WebApi.Controllers
 
  
         [EnableCors("DefaultPolicy")]
-        [HttpPost("/api/League", Name = "CreateLeague")]
+        [HttpPost("/api/League", Name = "CreateLeague"), Authorize]
 
         public async Task<ActionResult<League>> CreateLeague([FromBody] LeagueCreationDTO newLeague)
         {

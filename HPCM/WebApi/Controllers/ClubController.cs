@@ -33,7 +33,7 @@ public class ClubController : ControllerBase
     }
     
     [EnableCors("DefaultPolicy")]
-    [HttpGet("ClubId/{ClubId:int}",Name="GetClubById")]
+    [HttpGet("ClubId/{ClubId:int}",Name="GetClubById"), Authorize]
     public async Task<ActionResult<IEnumerable<Club>>> GetClubById(int ClubId){
 
         return (_clubRepository.GetClubById(ClubId) is IQueryable<Club> clubById)
@@ -43,7 +43,7 @@ public class ClubController : ControllerBase
     }
 
     [EnableCors("DefaultPolicy")]
-    [HttpGet("ClubId/{ClubId:int}/members", Name = "GetClubMembers")]
+    [HttpGet("ClubId/{ClubId:int}/members", Name = "GetClubMembers"), Authorize]
     public async Task<ActionResult<IEnumerable<Member>>> GetClubMembers(int ClubId)
     {
         //todo fix this
@@ -55,7 +55,7 @@ public class ClubController : ControllerBase
 
 
     [EnableCors("DefaultPolicy")]
-    [HttpGet("MemberId/{MemberId}")]
+    [HttpGet("MemberId/{MemberId}"), Authorize]
     public async Task<ActionResult<IEnumerable<Club>>> GetClubByMemberId(string MemberId)
     {
 
@@ -87,7 +87,7 @@ public class ClubController : ControllerBase
     }
 
     [EnableCors("DefaultPolicy")]
-    [HttpDelete("DeleteClub/{ClubId:int}")]
+    [HttpDelete("DeleteClub/{ClubId:int}"), Authorize]
     public async Task<bool> DeleteClub([FromBody] int ClubId, string memberID)
     {
         return (bool)await _clubRepository.DeleteClub(ClubId, memberID);
