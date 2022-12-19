@@ -22,7 +22,7 @@ public class ClubController : ControllerBase
     {
         _clubRepository = clubRepository;
     }
-    [EnableCors("DefaultPolicy")]
+    [EnableCors("DefaultPolicy"), Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Club>>> GetAllClubs(){
 
