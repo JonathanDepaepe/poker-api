@@ -54,6 +54,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("https://localhost:7255/api/");
+            policy.WithOrigins("https://localhost:7272/api/");
+            policy.WithOrigins("https://localhost:7171/api/");
         });
 });
 
@@ -99,8 +101,11 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.Services.AddHealthChecks();
 
+//basic healthcheck
 var app = builder.Build();
+app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
 

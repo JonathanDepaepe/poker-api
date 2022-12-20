@@ -25,7 +25,6 @@ public class UserController : ControllerBase
     [HttpGet("{MemberId}", Name = "GetMemberById"), Authorize]
     public async Task<ActionResult<IEnumerable<Member>>> GetMemberById(string MemberId)
     {
-
         return (_userRepository.GetMemberById(MemberId) is IQueryable<Member> memberById)
             ? Ok(await memberById
                 .ToListAsync())

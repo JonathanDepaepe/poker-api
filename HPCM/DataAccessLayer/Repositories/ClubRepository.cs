@@ -200,22 +200,20 @@ namespace DataAccessLayer.Repositories
                 if (CheckPermissions(creatorId, clubId, ClubRoles.ModeratorRole.ToString()) || CheckPermissions(creatorId, clubId, ClubRoles.AdminRole.ToString()))
                 {
                     ClubRoles definedRole = (ClubRoles) Enum.Parse(typeof(ClubRoles), role);
-                    using (SHA256 sha256Hash = SHA256.Create())
+                    using SHA256 sha256Hash = SHA256.Create();
+                    Invitation inv = new()
                     {
-                        Invitation inv = new()
-                        {
-                            MemberId = memberId,
-                            ClubId = clubId,
-                            CreatorId= creatorId,
-                            ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
-                            InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
-                            Role = definedRole
-                        };
+                        MemberId = memberId,
+                        ClubId = clubId,
+                        CreatorId = creatorId,
+                        ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
+                        InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
+                        Role = definedRole
+                    };
 
-                        await _db.Invitations.AddAsync(inv);
-                        await SaveAsync();
-                        return inv;
-                    }
+                    await _db.Invitations.AddAsync(inv);
+                    await SaveAsync();
+                    return inv;
                 }
                 else
                 {
@@ -330,7 +328,7 @@ namespace DataAccessLayer.Repositories
             {
                 var retrievedMembersIds = RetrieveClubMembersConnection(clubId);
 
-                List<IQueryable<Member?>> joinedMembers = new List<IQueryable<Member?>>();
+                List<IQueryable<Member?>> joinedMembers = new();
 
                 foreach (var item in retrievedMembersIds)
                 {
