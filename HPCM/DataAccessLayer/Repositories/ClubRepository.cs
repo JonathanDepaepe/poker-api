@@ -236,8 +236,8 @@ namespace DataAccessLayer.Repositories
             {
                 //check if member already in club
                 Invitation invitationAttempt = _db.Invitations.Where(s=>s.InvitationHash == hash).First();
-                var memberExists = _db.ClubMembers.Where(c => c.ClubId == invitationAttempt.ClubId && c.MemberId == memberId);
-                if (memberExists != null)
+                var memberExists = _db.ClubMembers.Where(c => c.ClubId == invitationAttempt.ClubId).Where(d=>d.MemberId==memberId);
+                if (memberExists.Count() > 0)
                 {
                     throw new Exception($"{memberId} already exists in the player base of the club.");
                 }
@@ -306,7 +306,7 @@ namespace DataAccessLayer.Repositories
                 
                 await _db.ClubMembers.AddAsync(newClubMember);
                 await SaveAsync();
-                return _db.ClubMembers.Where(s=>s.MemberId==memberId).OrderBy(b => b.MemberId).Last();
+                return _db.ClubMembers.Where(s=>s.MemberId==memberId && s.ClubId == clubId).OrderBy(b => b.MemberId).Last();
             }
             catch (Exception e)
             {

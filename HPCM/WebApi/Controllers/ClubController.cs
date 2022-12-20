@@ -103,6 +103,15 @@ public class ClubController : ControllerBase
             : BadRequest();
     }
 
+    [EnableCors("DefaultPolicy")]
+    [HttpPost("JoinClubInvite", Name = "JoinClubInvite"), Authorize]
+    public async Task<ActionResult<Invitation>> JoinClubInvite([FromBody] string inviteHash, string memberId)
+    {
+        return (await _clubRepository.JoinClubWithInvitation(memberId,inviteHash) is ClubMember executedInvite)
+            ? Created(Url.Link("JoinClubInvite", new { id = executedInvite?.MemberId }) ?? throw new InvalidOperationException(), executedInvite)
+            : BadRequest();
+    }
+
 
 
 

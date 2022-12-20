@@ -133,7 +133,7 @@ namespace DataAccessLayer.Repositories
                 //check if member already in League
                 LeagueInvitation invitationAttempt = _db.LeagueInvitations.Where(s => s.InvitationHash == hash).First();
                 var memberExists = _db.LeagueMembers.Where(c => c.LeagueId == invitationAttempt.LeagueId && c.MemberId == memberId);
-                if (memberExists != null)
+                if (memberExists.Count() > 0)
                 {
                     throw new Exception($"{memberId} already exists in the player base of the club.");
                 }

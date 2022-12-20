@@ -82,6 +82,14 @@ namespace WebApi.Controllers
                 : BadRequest();
         }
 
+        [EnableCors("DefaultPolicy")]
+        [HttpPost("JoinLeagueInvite", Name = "JoinLeagueInvite"), Authorize]
+        public async Task<ActionResult<Invitation>> JoinLeagueInvite([FromBody] string inviteHash, string memberId)
+        {
+            return (await _leagueRepository.JoinLeagueWithInvitation(memberId, inviteHash) is LeagueMember executedInvite)
+                ? Created(Url.Link("JoinLeagueInvite", new { id = executedInvite?.MemberId }) ?? throw new InvalidOperationException(), executedInvite)
+                : BadRequest();
+        }
 
     }
 }
