@@ -74,11 +74,11 @@ namespace WebApi.Controllers
         }
 
         [EnableCors("DefaultPolicy")]
-        [HttpPost("/api/league/invite", Name = "CreateLeagueInvite"), Authorize]
+        [HttpPost("CreateLeagueInvite", Name = "CreateLeagueInvite"), Authorize]
         public async Task<ActionResult<LeagueInvitation>> CreateLeagueInvite([FromBody] LeagueInviteDTO invite)
         {
-            return (await _leagueRepository.CreateLeagueInvitation(invite.memberId, invite.leagueId, invite.duration) is LeagueInvitation createdInvitation)
-                ? Created(Url.Link("CreateLeagueInvitation", new { id = createdInvitation?.LeagueId }) ?? throw new InvalidOperationException(), createdInvitation)
+            return (await _leagueRepository.CreateLeagueInvitation(invite.memberId, invite.leagueId, invite.duration) is LeagueInvitation createdLeagueInvitation)
+                ? Created(Url.Link("CreateLeagueInvite", new { id = createdLeagueInvitation?.InvitationHash }) ?? throw new InvalidOperationException(), createdLeagueInvitation)
                 : BadRequest();
         }
 

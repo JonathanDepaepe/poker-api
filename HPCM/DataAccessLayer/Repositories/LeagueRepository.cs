@@ -118,7 +118,7 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception e)
             {
-                throw new Exception("Unable to create Invitation| ", e);
+                throw new Exception("Unable to create LeagueInvitation| ", e);
             }
         }
 
