@@ -15,5 +15,7 @@ namespace DataAccessLayer.Interfaces
 
         Task<Member> CreateMember(IdentityUser newMemberDetails);
 
+        Task<Member?> AlterMember(MemberDTO newMemberDetails);
+
     }
 }

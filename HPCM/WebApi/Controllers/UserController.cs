@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Shared.DTO;
+using System.ComponentModel;
 
 namespace WebApi.Controllers;
 
@@ -31,4 +32,12 @@ public class UserController : ControllerBase
             : NotFound($"No Member found with id {MemberId}");
     }
 
+    [EnableCors("DefaultPolicy")]
+    [HttpPut("update", Name = "UpdateMember"), Authorize]
+    public async Task<ActionResult<Member>> UpdateMember(MemberDTO memberInfo)
+    {
+        return (await _userRepository.AlterMember(memberInfo) is Member alteredMember)
+        ? Accepted(alteredMember)
+        : BadRequest();
+    }
 }

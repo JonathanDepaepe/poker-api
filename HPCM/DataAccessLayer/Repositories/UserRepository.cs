@@ -3,6 +3,7 @@ using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Shared.DTO;
 
 namespace DataAccessLayer.Repositories
 {
@@ -14,6 +15,36 @@ namespace DataAccessLayer.Repositories
         public UserRepository(HpcmContext db)
         {
             _db = db;
+        }
+
+        public async Task<Member?> AlterMember(MemberDTO newMemberDetails)
+        {
+            try
+            {
+                var member = _db.Members.Where(s=>s.MemberId== newMemberDetails.MemberId).FirstOrDefault();
+                if (member != null && newMemberDetails.Email!=string.Empty && newMemberDetails.Nickname != string.Empty && newMemberDetails.Name != string.Empty)
+                {
+                    member.Email = newMemberDetails.Email;
+                    member.Nickname = newMemberDetails.Nickname;
+                    member.ProfilePictureUrl = newMemberDetails.ProfilePictureUrl;
+                    member.Name= newMemberDetails.Name;
+
+                    _db.Members.Update(member);
+                    await SaveAsync();
+                    return member;
+                }
+                else
+                {
+                    throw new Exception("Member not found when trying to update details!");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception("Failed to update member info! " + e);
+            }
         }
 
         public async Task<Member> CreateMember(IdentityUser createdUser)
