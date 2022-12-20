@@ -199,21 +199,25 @@ namespace DataAccessLayer.Repositories
                 //idea, create defined invite hash for club so multiple members can join. Deletable in club management
                 if (CheckPermissions(creatorId, clubId, ClubRoles.ModeratorRole.ToString()) || CheckPermissions(creatorId, clubId, ClubRoles.AdminRole.ToString()))
                 {
-                    ClubRoles definedRole = (ClubRoles) Enum.Parse(typeof(ClubRoles), role);
-                    using SHA256 sha256Hash = SHA256.Create();
-                    Invitation inv = new()
-                    {
-                        MemberId = memberId,
-                        ClubId = clubId,
-                        CreatorId = creatorId,
-                        ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
-                        InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
-                        Role = definedRole
-                    };
+                    ClubRoles definedRole = (ClubRoles)Enum.Parse(typeof(ClubRoles), role);
+                    //check if invitation for role already exists for the user!
+                    
 
-                    await _db.Invitations.AddAsync(inv);
-                    await SaveAsync();
-                    return inv;
+                        using SHA256 sha256Hash = SHA256.Create();
+                        Invitation inv = new()
+                        {
+                            MemberId = memberId,
+                            ClubId = clubId,
+                            CreatorId = creatorId,
+                            ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
+                            InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
+                            Role = definedRole
+                        };
+
+                        await _db.Invitations.AddAsync(inv);
+                        await SaveAsync();
+
+                        return inv;
                 }
                 else
                 {

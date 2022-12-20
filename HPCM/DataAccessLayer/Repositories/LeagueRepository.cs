@@ -95,7 +95,7 @@ namespace DataAccessLayer.Repositories
             return await _db.SaveChangesAsync() > 0;
         }
 
-        public async Task<LeagueInvitation?> CreateLeagueInvitation(string memberId, int leagueId)
+        public async Task<LeagueInvitation?> CreateLeagueInvitation(string memberId, int leagueId, int durationInDays)
         {
             try
             {
@@ -103,13 +103,12 @@ namespace DataAccessLayer.Repositories
                 using (SHA256 sha256Hash = SHA256.Create())
                 {
 
-                    LeagueInvitation inv = new LeagueInvitation()
+                    LeagueInvitation inv = new()
                     {
                         MemberId = memberId,
                         LeagueId = leagueId,
-                        ExpirationDate = DateTime.UtcNow.AddDays(7),
-                        InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(7))),
-                        
+                        ExpirationDate = DateTime.UtcNow.AddDays(durationInDays),
+                        InvitationHash = GetHash(sha256Hash, (memberId.ToString() + DateTime.UtcNow.AddDays(durationInDays))),
                     };
 
                     await _db.LeagueInvitations.AddAsync(inv);
@@ -122,6 +121,8 @@ namespace DataAccessLayer.Repositories
                 throw new Exception("Unable to create Invitation| ", e);
             }
         }
+
+
 
         public async Task<LeagueMember?> JoinLeagueWithInvitation(string memberId, string hash)
         {

@@ -99,7 +99,7 @@ public class ClubController : ControllerBase
     public async Task<ActionResult<Invitation>> CreateClubInvite([FromBody]ClubInviteDTO invite)
     {
         return (await _clubRepository.CreateInvitation(invite.creatorId, invite.memberId, invite.clubId, invite.role,invite.duration) is Invitation createdInvitation)
-            ? Created(Url.Link("CreateClubInvitation", new { id = createdInvitation?.ClubId }) ?? throw new InvalidOperationException(), createdInvitation)
+            ? Created(Url.Link("CreateClubInvite", new { id = createdInvitation?.InvitationHash }) ?? throw new InvalidOperationException(), createdInvitation)
             : BadRequest();
     }
 

@@ -16,7 +16,6 @@ namespace DataAccessLayer.Models
         public string Email { get; set; }
         public MemberTypes MemberAssignedType {get;set;}
         public string ProfilePictureUrl { get; set;} = null!;
-
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<Club> Clubs { get; set; }
     }
@@ -28,4 +27,5 @@ namespace DataAccessLayer.Models
         PayingMember=10,
         AdminMember=100
     }
+
 }

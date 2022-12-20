@@ -116,7 +116,8 @@ namespace DataAccessLayer.Models
 
             modelBuilder.Entity<Invitation>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.ClubId, e.MemberId, e.Role })
+                    .HasName("ClubInvitation_PK");
 
                 entity.ToTable("Invitation");
 
@@ -143,7 +144,8 @@ namespace DataAccessLayer.Models
 
             modelBuilder.Entity<LeagueInvitation>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.LeagueId, e.MemberId })
+                    .HasName("LeagueInvitation_PK");
 
                 entity.ToTable("LeagueInvitation");
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Execution;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +71,15 @@ namespace WebApi.Controllers
                 throw new InvalidOperationException("unable to create league| ", e);
             }
 
+        }
+
+        [EnableCors("DefaultPolicy")]
+        [HttpPost("/api/league/invite", Name = "CreateLeagueInvite"), Authorize]
+        public async Task<ActionResult<LeagueInvitation>> CreateLeagueInvite([FromBody] LeagueInviteDTO invite)
+        {
+            return (await _leagueRepository.CreateLeagueInvitation(invite.memberId, invite.leagueId, invite.duration) is LeagueInvitation createdInvitation)
+                ? Created(Url.Link("CreateLeagueInvitation", new { id = createdInvitation?.LeagueId }) ?? throw new InvalidOperationException(), createdInvitation)
+                : BadRequest();
         }
 
 
